@@ -13,4 +13,13 @@
   <Property type="http://spec.example.net/version">2.0</Property>
 
   <Property type="empty" xsi:nil="true" />
+
+  <Link rel="link" href="http://example.com/gpburdell">
+   <Property type="name">Stevie</Property>
+
+   <Property type="color">green</Property>
+   <Property type="color">orange</Property>
+
+   <Property type="empty" xsi:nil="true" />
+  </Link>
 </XRD>

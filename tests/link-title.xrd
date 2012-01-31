@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">
+  <Link rel="title" href="http://photos.example.com/gpburdell.jpg">
+    <Title xml:lang="en">User Photo</Title>
+    <Title xml:lang="de">Benutzerfoto</Title>
+  </Link>
+
+  <Link rel="name" href="http://photos.example.com/gpburdell.jpg">
+    <Title>Stevie</Title>
+    <Title xml:lang="en">Stieeevie</Title>
+    <Title xml:lang="de">Steffen</Title>
+  </Link>
+</XRD>

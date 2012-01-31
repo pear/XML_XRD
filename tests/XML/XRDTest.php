@@ -120,8 +120,19 @@ XRD;
         $link = $this->xrd->get('picture', 'image/jpeg');
         $this->assertInstanceOf('XML_XRD_Element_Link', $link);
         $this->assertEquals(
-            'http://example.com/picture-notype.jpg', $link->href,
-            'Image without type is first, thus has higher priority'
+            'http://example.com/picture.jpg', $link->href,
+            'Image without type is first, but with correct type is more'
+            . ' specific and thus has higher priority'
+        );
+    }
+
+    public function testGetRelationTypeOptionalNone()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../multilinks.xrd');
+        $link = $this->xrd->get('picture', 'image/svg+xml');
+        $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+        $this->assertEquals(
+            'http://example.com/picture-notype.jpg', $link->href
         );
     }
 
