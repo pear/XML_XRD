@@ -2,8 +2,41 @@
 require_once 'XML/XRD/Element/Link.php';
 require_once 'XML/XRD/Element/Property.php';
 
-class XML_XRD implements ArrayAccess
+class XML_XRD implements ArrayAccess, Iterator
 {
+    /**
+     * XRD subject
+     *
+     * @var string
+     */
+    public $subject;
+
+    /**
+     * Array of subject alias strings
+     *
+     * @var array
+     */
+    public $aliases = array();
+
+    /**
+     * Array of link objects
+     *
+     * @var array
+     */
+    public $links = array();
+
+    /**
+     * Position of the iterator
+     */
+    protected $iteratorPos = 0;
+
+    /**
+     * XRD 1.0 namespace
+     */
+    const NS_XRD = 'http://docs.oasis-open.org/ns/xri/xrd-1.0';
+
+
+
     /**
      * Loads the contents of the given file
      *
@@ -13,7 +46,14 @@ class XML_XRD implements ArrayAccess
      */
     public function loadFile($file)
     {
-        return $this->load(simplexml_load_file($file));
+        $old = libxml_use_internal_errors(true);
+        $x = simplexml_load_file($file);
+        libxml_use_internal_errors($old);
+        //FIXME: throw exception?
+        if ($x === false) {
+            return false;
+        }
+        return $this->load($x);
     }
 
     /**
@@ -25,7 +65,11 @@ class XML_XRD implements ArrayAccess
      */
     public function loadString($xml)
     {
-        return $this->load(simplexml_load_string($xml));
+        $x = simplexml_load_string($xml);
+        if ($x === false) {
+            return false;
+        }
+        return $this->load($x);
     }
 
     /**
@@ -37,21 +81,111 @@ class XML_XRD implements ArrayAccess
      */
     protected function load(SimpleXMLElement $x)
     {
+        $ns = $x->getDocNamespaces();
+        if ($ns[''] !== self::NS_XRD) {
+            return false;
+        }
+        if ($x->getName() != 'XRD') {
+            return false;
+        }
+
+        if (isset($x->Subject)) {
+            $this->subject = (string)$x->Subject;
+        }
+        foreach ($x->Alias as $xAlias) {
+            $this->aliases[] = (string)$xAlias;
+        }
+
+        foreach ($x->Link as $xLink) {
+            $this->links[] = new XML_XRD_Element_Link($xLink);
+        }
+
+        return true;
     }
 
-    public function describes()
+    /**
+     * Checks if the XRD document describes the given URI.
+     *
+     * This should always be used to make sure the XRD file
+     * is the correct one for e.g. the given host, and not a copycat.
+     *
+     * Checks against the subject and aliases
+     *
+     * @param string $uri An URI that the document is expected to describe
+     *
+     * @return boolean True or false
+     */
+    public function describes($uri)
     {
-        //FIXME
+        if ($this->subject == $uri) {
+            return true;
+        }
+        foreach ($this->aliases as $alias) {
+            if ($alias == $uri) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public function get()
+    /**
+     * Get the link with highest priority for the given relation and type.
+     *
+     * @param string  $rel          Relation name
+     * @param string  $type         MIME Type
+     * @param boolean $typeFallback When true and no link with the given type
+     *                              could be found, the best link without a
+     *                              type will be returned
+     *
+     * @return XML_XRD_Element_Link Link object or NULL if none found
+     */
+    public function get($rel, $type = null, $typeFallback = true)
     {
-        //FIXME
+        $links = $this->getAll($rel, $type, $typeFallback);
+        if (count($links) == 0) {
+            return null;
+        }
+
+        return $links[0];
     }
 
-    public function getAll()
+
+    /**
+     * Get all links with the given relation and type, highest priority first.
+     *
+     * @param string  $rel          Relation name
+     * @param string  $type         MIME Type
+     * @param boolean $typeFallback When true and no link with the given type
+     *                              could be found, the best link without a
+     *                              type will be returned
+     *
+     * @return array Array of XML_XRD_Element_Link objects
+     */
+    public function getAll($rel, $type = null, $typeFallback = true)
     {
-        //FIXME
+        $links = array();
+        $exactType = false;
+        foreach ($this->links as $link) {
+            if ($link->rel == $rel
+                && ($type === null || $link->type == $type
+                    || $typeFallback && $link->type === null)
+            ) {
+                $links[] = $link;
+                $exactType |= $typeFallback && $type !== null && $link->type == $type;
+            }
+        }
+        if ($exactType) {
+            //remove all links without type
+            $exactlinks = array();
+            foreach ($links as $link) {
+                if ($link->type !== null) {
+                    $exactlinks[] = $link;
+                }
+            }
+            $links = $exactlinks;
+        }
+        return $links;
     }
 
     public function offsetExists($key)
@@ -74,6 +208,66 @@ class XML_XRD implements ArrayAccess
     public function getProperties()
     {
         //FIXME
+    }
+
+    /**
+     * Get the current iterator's link object
+     *
+     * Part of the Iterator interface
+     *
+     * @return XML_XRD_Element_Link Link element
+     */
+    public function current()
+    {
+        return $this->links[$this->iteratorPos];
+    }
+
+    /**
+     * Move to the next link object
+     *
+     * Part of the Iterator interface
+     *
+     * @return void
+     */
+    public function next()
+    {
+        ++$this->iteratorPos;
+    }
+
+    /**
+     * Get the current iterator key
+     *
+     * Part of the Iterator interface
+     *
+     * @return integer Iterator position
+     */
+    public function key()
+    {
+        return $this->iteratorPos;
+    }
+
+    /**
+     * Check if the current iterator position is valid
+     *
+     * Part of the Iterator interface
+     *
+     * @return boolean True if the current position is valid
+     */
+    public function valid()
+    {
+        return isset($this->links[$this->iteratorPos]);
+    }
+
+    /**
+     * Reset the iterator position back to the first element
+     *
+     * Part of the Iterator interface
+     *
+     * @return void
+     */
+    public function rewind()
+    {
+        $this->iteratorPos = 0;
     }
 }
 

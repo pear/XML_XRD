@@ -166,17 +166,28 @@ XRD;
         $this->assertEquals('http://example.com/cv.xml', $links[2]->href);
     }
 
-    public function testGetAllRelationTypeOptional()
+    public function testGetAllRelationTypeOptionalExact()
     {
         $this->xrd->loadFile(__DIR__ . '/../multilinks.xrd');
         $links = $this->xrd->getAll('cv', 'text/html');
         $this->assertInternalType('array', $links);
-        $this->assertEquals(2, count($links));
+        $this->assertEquals(1, count($links));
         foreach ($links as $link) {
             $this->assertInstanceOf('XML_XRD_Element_Link', $link);
         }
         $this->assertEquals('http://example.com/cv.html', $links[0]->href);
-        $this->assertEquals('http://example.com/cv.xml', $links[1]->href);
+    }
+
+    public function testGetAllRelationTypeOptionalNotExact()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../multilinks.xrd');
+        $links = $this->xrd->getAll('cv', 'text/xhtml+xml');
+        $this->assertInternalType('array', $links);
+        $this->assertEquals(1, count($links));
+        foreach ($links as $link) {
+            $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+        }
+        $this->assertEquals('http://example.com/cv.xml', $links[0]->href);
     }
 
     public function testGetAllRelationTypeRequired()
