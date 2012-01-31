@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+  <Subject>http://example.com/gpburdell</Subject>
+
+  <Property type="name">Stevie</Property>
+
+  <Property type="color">green</Property>
+  <Property type="color">orange</Property>
+
+  <Property type="http://spec.example.net/version">1.0</Property>
+  <Property type="http://spec.example.net/version">2.0</Property>
+
+  <Property type="empty" xsi:nil="true" />
+</XRD>
