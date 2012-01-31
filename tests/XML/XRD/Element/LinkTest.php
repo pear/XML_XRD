@@ -4,12 +4,14 @@ require_once 'XML/XRD.php';
 class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
 {
     public $xrd;
+    public $link;
 
     public function setUp()
     {
         $this->xrd = new XML_XRD();
         $this->xrd->loadFile(__DIR__ . '/../../../xrd-1.0-b1.xrd');
         $this->link = $this->xrd->get('http://spec.example.net/photo/1.0');
+        $this->assertInstanceOf('XML_XRD_Element_Link', $this->link);
     }
 
     public function testPropertyRel()
