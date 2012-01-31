@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">
+  <Subject>http://example.com/</Subject>
+
+  <Link rel="lrdd" href="http://example.com/lrdd/1" />
+  <Link rel="lrdd" href="http://example.com/lrdd/2" />
+
+  <Link rel="picture" href="http://example.com/picture-notype.jpg" />
+  <Link rel="picture" type="image/jpeg" href="http://example.com/picture.jpg" />
+  <Link rel="picture" type="image/png" href="http://example.com/picture.png" />
+
+  <Link rel="cv" type="text/plain" href="http://example.com/cv.txt" />
+  <Link rel="cv" type="text/html" href="http://example.com/cv.html" />
+  <Link rel="cv" href="http://example.com/cv.xml" />
+</XRD>
