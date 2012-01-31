@@ -236,6 +236,63 @@ XRD;
         $this->assertEquals('color', $props[1]->type);
         $this->assertEquals('orange', $props[1]->value);
     }
+
+    public function testPropertyExpiresNone()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../properties.xrd');
+        $this->assertNull($this->xrd->expires);
+    }
+
+    public function testPropertyExpiresTimestampZero()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../xrd-1.0-b1.xrd');
+        $this->assertEquals(0, $this->xrd->expires);
+    }
+
+    public function testPropertyExpiresTimestamp()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../expires.xrd');
+        $this->assertEquals(123456, $this->xrd->expires);
+    }
+
+    public function testPropertySubjectNone()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../expires.xrd');
+        $this->assertNull($this->xrd->subject);
+    }
+
+    public function testPropertySubject()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../xrd-1.0-b1.xrd');
+        $this->assertEquals('http://example.com/gpburdell', $this->xrd->subject);
+    }
+
+    public function testPropertyAliasNone()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../xrd-1.0-b1.xrd');
+        $this->assertEquals(array(), $this->xrd->aliases);
+    }
+
+    public function testPropertyAlias()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../xrd-1.0-b2.xrd');
+        $this->assertInternalType('array', $this->xrd->aliases);
+        $this->assertEquals(2, count($this->xrd->aliases));
+        $this->assertEquals('http://people.example.com/gpburdell', $this->xrd->aliases[0]);
+        $this->assertEquals('acct:gpburdell@example.com', $this->xrd->aliases[1]);
+    }
+
+    public function testPropertyIdNone()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../expires.xrd');
+        $this->assertNull($this->xrd->id);
+    }
+
+    public function testPropertyId()
+    {
+        $this->xrd->loadFile(__DIR__ . '/../xrd-1.0-b2.xrd');
+        $this->assertEquals('foo', $this->xrd->id);
+    }
 }
 
 ?>
