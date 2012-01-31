@@ -26,6 +26,28 @@ class XML_XRD implements ArrayAccess, Iterator
     public $links = array();
 
     /**
+     * Array of property objects
+     *
+     * @var array
+     */
+    public $properties = array();
+
+    /**
+     * Unix timestamp when the document expires.
+     * NULL when no expiry date set.
+     *
+     * @var integer|null
+     */
+    public $expires;
+
+    /**
+     * xml:id of the XRD document
+     *
+     * @var string|null
+     */
+    public $id;
+
+    /**
      * Position of the iterator
      */
     protected $iteratorPos = 0;
@@ -98,6 +120,19 @@ class XML_XRD implements ArrayAccess, Iterator
 
         foreach ($x->Link as $xLink) {
             $this->links[] = new XML_XRD_Element_Link($xLink);
+        }
+
+        foreach ($x->Property as $xProp) {
+            $this->properties[] = new XML_XRD_Element_Property($xProp);
+        }
+
+        if (isset($x->Expires)) {
+            $this->expires = strtotime($x->Expires);
+        }
+
+        $xmlAttrs = $x->attributes('http://www.w3.org/XML/1998/namespace');
+        if (isset($xmlAttrs['id'])) {
+            $this->id = (string)$xmlAttrs['id'];
         }
 
         return true;
@@ -188,26 +223,83 @@ class XML_XRD implements ArrayAccess, Iterator
         return $links;
     }
 
-    public function offsetExists($key)
+    /**
+     * Check if the property with the given type exists
+     *
+     * Part of the ArrayAccess interface
+     *
+     * @return boolean True if it exists
+     */
+    public function offsetExists($type)
     {
-        //FIXME
-    }
-    public function offsetGet($key)
-    {
-        //FIXME
-    }
-    public function offsetSet($key, $value)
-    {
-        //FIXME
-    }
-    public function offsetUnset($key)
-    {
-        //FIXME
+        foreach ($this->properties as $prop) {
+            if ($prop->type == $type) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public function getProperties()
+    /**
+     * Return the highest ranked property with the given type
+     *
+     * Part of the ArrayAccess interface
+     *
+     * @return string Property value or NULL if empty
+     */
+    public function offsetGet($type)
     {
-        //FIXME
+        foreach ($this->properties as $prop) {
+            if ($prop->type == $type) {
+                return $prop->value;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Not implemented.
+     *
+     * Part of the ArrayAccess interface
+     *
+     * @return void
+     */
+    public function offsetSet($type, $value)
+    {
+        throw new LogicException('Changing properties not implemented');
+    }
+
+    /**
+     * Not implemented.
+     *
+     * Part of the ArrayAccess interface
+     *
+     * @return void
+     */
+    public function offsetUnset($type)
+    {
+        throw new LogicException('Changing properties not implemented');
+    }
+
+    /**
+     * Get all properties with the given type
+     *
+     * @param string $type Property type to filter by
+     *
+     * @return array Array of XML_XRD_Element_Property objects
+     */
+    public function getProperties($type = null)
+    {
+        if ($type === null) {
+            return $this->properties;
+        }
+        $properties = array();
+        foreach ($this->properties as $prop) {
+            if ($prop->type == $type) {
+                $properties[] = $prop;
+            }
+        }
+        return $properties;
     }
 
     /**
