@@ -41,17 +41,17 @@ class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->link->template);
     }
 
-    public function testPropertyTitle()
-    {
-        $this->assertEquals('User Photo', $this->link->title, 'First title returned');
-    }
-
     public function testPropertyTitles()
     {
         $this->assertEquals(
             array('en' => 'User Photo', 'de' => 'Benutzerfoto'),
             $this->link->titles
         );
+    }
+
+    public function testGetTitleNoParam()
+    {
+        $this->assertEquals('User Photo', $this->link->getTitle(), 'First title returned');
     }
 
     public function testGetTitle()
