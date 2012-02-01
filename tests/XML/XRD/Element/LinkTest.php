@@ -32,7 +32,7 @@ class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
     public function testPropertyTemplate()
     {
         $this->xrd->loadFile(__DIR__ . '/../../../link-template.xrd');
-        $this->link = $this->xrd->get('http://spec.example.net/photo/1.0');
+        $this->link = $this->xrd->get('title');
         $this->assertEquals('http://photos.example.com/{uri}.jpg', $this->link->template);
     }
 
