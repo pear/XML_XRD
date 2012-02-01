@@ -3,4 +3,7 @@
  <php>
   <includePath>../src/</includePath>
  </php>
+ <whitelist addUncoveredFilesFromWhitelist="true">
+  <directory suffix=".php">../src/</directory>
+ </whitelist>
 </phpunit>
