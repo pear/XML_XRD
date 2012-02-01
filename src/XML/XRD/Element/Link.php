@@ -1,6 +1,7 @@
 <?php
+require_once 'XML/XRD/PropertyAccess.php';
 
-class XML_XRD_Element_Link
+class XML_XRD_Element_Link extends XML_XRD_PropertyAccess
 {
     /**
      * Link relation
@@ -57,6 +58,8 @@ class XML_XRD_Element_Link
                 $this->titles[$lang] = (string)$xTitle;
             }
         }
+
+        $this->loadProperties($x);
     }
 
     /**

@@ -59,6 +59,11 @@ class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Benutzerfoto', $this->link->getTitle('de'));
     }
 
+    public function testGetTitleNoTitles()
+    {
+        $this->assertNull($this->xrd->get('http://spec.example.net/auth/1.0')->getTitle());
+    }
+
     public function testGetTitleLangNotFound()
     {
         $this->assertEquals(
@@ -69,8 +74,9 @@ class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
 
     public function testGetTitleLangNotFoundFallbackNoLang()
     {
-        $this->xrd->loadFile(__DIR__ . '/../../../link-title.xrd');
-        $link = $this->xrd->get('name');
+        $xrd = new XML_XRD();
+        $xrd->loadFile(__DIR__ . '/../../../link-title.xrd');
+        $link = $xrd->get('name');
         $this->assertEquals(
             'Stevie', $link->getTitle('fr'),
             'First title without language when not found'
@@ -80,8 +86,9 @@ class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
 
     public function testArrayAccess()
     {
-        $this->xrd->loadFile(__DIR__ . '/../properties.xrd');
-        $link = $this->xrd->get('link');
+        $xrd = new XML_XRD();
+        $xrd->loadFile(__DIR__ . '/../../../properties.xrd');
+        $link = $xrd->get('link');
         $this->assertEquals('Stevie', $link['name']);
         $this->assertEquals('green', $link['color']);
         $this->assertNull($link['empty']);
