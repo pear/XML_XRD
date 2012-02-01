@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package version="2.0"
+ xmlns="http://pear.php.net/dtd/package-2.0"
+ xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+  http://pear.php.net/dtd/tasks-1.0.xsd
+  http://pear.php.net/dtd/package-2.0
+  http://pear.php.net/dtd/package-2.0.xsd"
+>
+ <name>XML_XRD</name>
+ <channel>pear.php.net</channel>
+ <summary>PHP library to parse "Extensible Resource Descriptor" (XRD) files</summary>
+ <description>
+PHP library to parse "Extensible Resource Descriptor (XRD) Version 1.0" files.
+
+XRD files are used for ".well-known/host-meta" files as standardized in
+"RFC 6415: Web Host Metadata", as well as in the 
+"LRDD (Link-based Resource Descriptor Discovery)" files linked from it.
+
+The LRDD XRD files can be used to discover information about users by just their
+e-mail address, e.g. the OpenID provider.
+This is the foundation of Webfinger, which lets people use their e-mail address
+to do OpenID sign in.
+
+The XRD format supercedes the XRDS format defined in XRI 2.0, which is used in
+the Yadis communications protocol.
+ </description>
+
+ <lead>
+  <name>Christian Weiske</name>
+  <user>cweiske</user>
+  <email>cweiske@php.net</email>
+  <active>yes</active>
+ </lead>
+
+ <date>2012-02-01</date>
+
+ <version>
+  <release>0.1.0</release>
+  <api>0.1.0</api>
+ </version>
+ <stability>
+  <release>alpha</release>
+  <api>alpha</api>
+ </stability>
+ <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL</license>
+
+ <notes>
+  - First public version
+ </notes>
+
+ <contents>
+  <dir name="/">
+   <dir name="src">
+    <dir name="XML">
+     <file name="XRD.php"             role="php" install-as="XML/XRD.php" />
+     <dir name="XRD">
+      <file name="Exception.php"      role="php" install-as="XML/XRD/Exception.php" />
+      <file name="PropertyAccess.php" role="php" install-as="XML/XRD/PropertyAccess.php" />
+      <dir name="Element">
+       <file name="Link.php"          role="php" install-as="XML/XRD/Element/Link.php" />
+       <file name="Property.php"      role="php" install-as="XML/XRD/Element/Property.php" />
+      </dir>
+     </dir>
+    </dir>
+   </dir><!-- /src -->
+   <dir name="examples">
+    <file name="webfinger.php"        role="doc" />
+   </dir>
+   <dir name="tests">
+    <file name="expires.xrd"          role="test" />
+    <file name="link-template.xrd"    role="test" />
+    <file name="link-title.xrd"       role="test" />
+    <file name="multilinks.xrd"       role="test" />
+    <file name="phpunit.xml"          role="test" />
+    <file name="properties.xrd"       role="test" />
+    <file name="xrd-1.0-b1.xrd"       role="test" />
+    <file name="xrd-1.0-b2.xrd"       role="test" />
+    <dir name="XML">
+     <file name="XRDTest.php"         role="test" />
+     <dir name="XRD">
+      <dir name="Element">
+       <file name="LinkTest.php"        role="test" />
+      </dir>
+     </dir>
+    </dir>
+   </dir><!-- /tests -->
+  </dir>
+ </contents>
+
+ <dependencies>
+  <required>
+   <php>
+    <min>5.3.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.9.0</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+
+ <phprelease />
+ <changelog>
+
+  <release>
+   <version>
+    <release>0.1.0</release>
+    <api>0.1.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2012-02-01</date>
+   <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL</license>
+   <notes>
+    First public version
+   </notes>
+  </release>
+
+ </changelog>
+</package>
