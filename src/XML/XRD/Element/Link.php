@@ -1,6 +1,31 @@
 <?php
+/**
+ * Part of XML_XRD
+ *
+ * PHP version 5
+ *
+ * @category XML
+ * @package  XML_XRD
+ * @author   Christian Weiske <cweiske@php.net>
+ * @license  http://www.gnu.org/copyleft/lesser.html LGPL
+ * @link     http://pear.php.net/package/XML_XRD
+ */
+
 require_once 'XML/XRD/PropertyAccess.php';
 
+/**
+ * Link element in a XRD file. Attribute access via object properties.
+ *
+ * Retrieving the title of a link is possible with the getTitle() convenience
+ * method.
+ *
+ * @category XML
+ * @package  XML_XRD
+ * @author   Christian Weiske <cweiske@php.net>
+ * @license  http://www.gnu.org/copyleft/lesser.html LGPL
+ * @version  Release: @package_version@
+ * @link     http://pear.php.net/package/XML_XRD
+ */
 class XML_XRD_Element_Link extends XML_XRD_PropertyAccess
 {
     /**
@@ -40,6 +65,11 @@ class XML_XRD_Element_Link extends XML_XRD_PropertyAccess
 
 
 
+    /**
+     * Create a new instance and load data from the XML element
+     *
+     * @param object $x SimpleXMLElement representing the <Link>
+     */
     public function __construct(SimpleXMLElement $x)
     {
         foreach (array('rel', 'type', 'href', 'template') as $var) {

@@ -1,8 +1,39 @@
 <?php
+/**
+ * Part of XML_XRD
+ *
+ * PHP version 5
+ *
+ * @category XML
+ * @package  XML_XRD
+ * @author   Christian Weiske <cweiske@php.net>
+ * @license  http://www.gnu.org/copyleft/lesser.html LGPL
+ * @link     http://pear.php.net/package/XML_XRD
+ */
+
 require_once 'XML/XRD/PropertyAccess.php';
 require_once 'XML/XRD/Element/Link.php';
 require_once 'XML/XRD/Exception.php';
 
+/**
+ * Main class used to load XRD documents from string or file.
+ *
+ * After loading the file, access to links is possible with get() and getAll(),
+ * as well as foreach-iterating over the XML_XRD object.
+ *
+ * Property access is possible with getProperties() and array access on the
+ * XML_XRD object.
+ *
+ * Verification that the subject/aliases match the requested URL can be done with
+ * describes().
+ *
+ * @category XML
+ * @package  XML_XRD
+ * @author   Christian Weiske <cweiske@php.net>
+ * @license  http://www.gnu.org/copyleft/lesser.html LGPL
+ * @version  Release: @package_version@
+ * @link     http://pear.php.net/package/XML_XRD
+ */
 class XML_XRD extends XML_XRD_PropertyAccess implements Iterator
 {
     /**
@@ -217,10 +248,11 @@ class XML_XRD extends XML_XRD_PropertyAccess implements Iterator
         foreach ($this->links as $link) {
             if ($link->rel == $rel
                 && ($type === null || $link->type == $type
-                    || $typeFallback && $link->type === null)
+                || $typeFallback && $link->type === null)
             ) {
-                $links[] = $link;
-                $exactType |= $typeFallback && $type !== null && $link->type == $type;
+                $links[]    = $link;
+                $exactType |= $typeFallback && $type !== null
+                    && $link->type == $type;
             }
         }
         if ($exactType) {

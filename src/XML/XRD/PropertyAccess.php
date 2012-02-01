@@ -1,7 +1,32 @@
 <?php
+/**
+ * Part of XML_XRD
+ *
+ * PHP version 5
+ *
+ * @category XML
+ * @package  XML_XRD
+ * @author   Christian Weiske <cweiske@php.net>
+ * @license  http://www.gnu.org/copyleft/lesser.html LGPL
+ * @link     http://pear.php.net/package/XML_XRD
+ */
+
 require_once 'XML/XRD/Element/Property.php';
 
-class XML_XRD_PropertyAccess implements ArrayAccess
+/**
+ * Provides ArrayAccess to extending classes (XML_XRD and XML_XRD_Element_Link).
+ *
+ * By extending PropertyAccess, access to properties is possible with
+ * "$object['propertyType']" array access notation.
+ *
+ * @category XML
+ * @package  XML_XRD
+ * @author   Christian Weiske <cweiske@php.net>
+ * @license  http://www.gnu.org/copyleft/lesser.html LGPL
+ * @version  Release: @package_version@
+ * @link     http://pear.php.net/package/XML_XRD
+ */
+abstract class XML_XRD_PropertyAccess implements ArrayAccess
 {
 
     /**
@@ -31,6 +56,8 @@ class XML_XRD_PropertyAccess implements ArrayAccess
      *
      * Part of the ArrayAccess interface
      *
+     * @param string $type Property type to check for
+     *
      * @return boolean True if it exists
      */
     public function offsetExists($type)
@@ -47,6 +74,8 @@ class XML_XRD_PropertyAccess implements ArrayAccess
      * Return the highest ranked property with the given type
      *
      * Part of the ArrayAccess interface
+     *
+     * @param string $type Property type to check for
      *
      * @return string Property value or NULL if empty
      */
@@ -65,6 +94,9 @@ class XML_XRD_PropertyAccess implements ArrayAccess
      *
      * Part of the ArrayAccess interface
      *
+     * @param string $type  Property type to check for
+     * @param string $value New property value
+     *
      * @return void
      */
     public function offsetSet($type, $value)
@@ -76,6 +108,8 @@ class XML_XRD_PropertyAccess implements ArrayAccess
      * Not implemented.
      *
      * Part of the ArrayAccess interface
+     *
+     * @param string $type Property type to check for
      *
      * @return void
      */
