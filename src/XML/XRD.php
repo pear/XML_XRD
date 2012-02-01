@@ -1,6 +1,7 @@
 <?php
 require_once 'XML/XRD/PropertyAccess.php';
 require_once 'XML/XRD/Element/Link.php';
+require_once 'XML/XRD/Exception.php';
 
 class XML_XRD extends XML_XRD_PropertyAccess implements Iterator
 {
@@ -57,16 +58,20 @@ class XML_XRD extends XML_XRD_PropertyAccess implements Iterator
      *
      * @param string $file Path to an XRD file
      *
-     * @return boolean True when all went well
+     * @return void
+     *
+     * @throws XML_XRD_Exception When the XML is invalid or cannot be loaded
      */
     public function loadFile($file)
     {
         $old = libxml_use_internal_errors(true);
         $x = simplexml_load_file($file);
         libxml_use_internal_errors($old);
-        //FIXME: throw exception?
         if ($x === false) {
-            return false;
+            throw new XML_XRD_Exception(
+                'Error loading XML file: ' . libxml_get_last_error()->message,
+                XML_XRD_Exception::LOAD_XML
+            );
         }
         return $this->load($x);
     }
@@ -76,13 +81,26 @@ class XML_XRD extends XML_XRD_PropertyAccess implements Iterator
      *
      * @param string $xml XML string
      *
-     * @return boolean True when all went well
+     * @return void
+     *
+     * @throws XML_XRD_Exception When the XML is invalid or cannot be loaded
      */
     public function loadString($xml)
     {
+        if ($xml == '') {
+            throw new XML_XRD_Exception(
+                'Error loading XML string: string empty',
+                XML_XRD_Exception::LOAD_XML
+            );
+        }
+        $old = libxml_use_internal_errors(true);
         $x = simplexml_load_string($xml);
+        libxml_use_internal_errors($old);
         if ($x === false) {
-            return false;
+            throw new XML_XRD_Exception(
+                'Error loading XML string: ' . libxml_get_last_error()->message,
+                XML_XRD_Exception::LOAD_XML
+            );
         }
         return $this->load($x);
     }
@@ -92,16 +110,22 @@ class XML_XRD extends XML_XRD_PropertyAccess implements Iterator
      *
      * @param object $x XML element containing the whole XRD document
      *
-     * @return boolean True when all went well
+     * @return void
+     *
+     * @throws XML_XRD_Exception When the XML is invalid
      */
     protected function load(SimpleXMLElement $x)
     {
         $ns = $x->getDocNamespaces();
         if ($ns[''] !== self::NS_XRD) {
-            return false;
+            throw new XML_XRD_Exception(
+                'Wrong document namespace', XML_XRD_Exception::DOC_NS
+            );
         }
         if ($x->getName() != 'XRD') {
-            return false;
+            throw new XML_XRD_Exception(
+                'XML root element is not "XRD"', XML_XRD_Exception::DOC_ROOT
+            );
         }
 
         if (isset($x->Subject)) {
@@ -125,8 +149,6 @@ class XML_XRD extends XML_XRD_PropertyAccess implements Iterator
         if (isset($xmlAttrs['id'])) {
             $this->id = (string)$xmlAttrs['id'];
         }
-
-        return true;
     }
 
     /**

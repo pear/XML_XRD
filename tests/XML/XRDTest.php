@@ -21,28 +21,73 @@ class XML_XRDTest extends PHPUnit_Framework_TestCase
   </Link>
 </XRD>
 XRD;
-        $this->assertTrue(
+        $this->assertNull(
             $this->xrd->loadString($xrdstring)
         );
     }
 
+    /**
+     * @expectedException XML_XRD_Exception
+     * @expectedExceptionMessage Error loading XML string: string empty
+     */
     public function testLoadStringFailEmpty()
     {
-        $this->assertFalse($this->xrd->loadString(""));
+        $this->xrd->loadString("");
+    }
+
+    /**
+     * @expectedException XML_XRD_Exception
+     * @expectedExceptionMessage Error loading XML string: Start tag expected
+     */
+    public function testLoadStringFailBroken()
+    {
+        $this->xrd->loadString("<?xml");
+    }
+
+    /**
+     * @expectedException XML_XRD_Exception
+     * @expectedExceptionMessage Wrong document namespace
+     */
+    public function testLoadXmlWrongNamespace()
+    {
+        $xrdstring = <<<XRD
+<?xml version="1.0"?>
+<XRD xmlns="http://this/is/wrong">
+  <Subject>http://example.com/gpburdell</Subject>
+</XRD>
+XRD;
+        $this->xrd->loadString($xrdstring);
+    }
+
+    /**
+     * @expectedException XML_XRD_Exception
+     * @expectedExceptionMessage XML root element is not "XRD"
+     */
+    public function testLoadXmlWrongRootElement()
+    {
+        $xrdstring = <<<XRD
+<?xml version="1.0"?>
+<FOO xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">
+  <Subject>http://example.com/gpburdell</Subject>
+</FOO>
+XRD;
+        $this->xrd->loadString($xrdstring);
     }
 
     public function testLoadFile()
     {
-        $this->assertTrue(
+        $this->assertNull(
             $this->xrd->loadFile(__DIR__ . '/../xrd-1.0-b1.xrd')
         );
     }
 
+    /**
+     * @expectedException XML_XRD_Exception
+     * @expectedExceptionMessage Error loading XML file: failed to load external entity
+     */
     public function testLoadFileNonExisting()
     {
-        $this->assertFalse(
-            $this->xrd->loadFile(__DIR__ . '/../doesnotexist')
-        );
+        $this->xrd->loadFile(__DIR__ . '/../doesnotexist');
     }
 
     public function testDescribesNoAlias()
