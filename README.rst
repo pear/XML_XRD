@@ -2,27 +2,75 @@
 XML_XRD
 *******
 
-PHP library to parse `Extensible Resource Descriptor (XRD) Version 1.0` files.
+PHP library to parse `Extensible Resource Descriptor (XRD) Version 1.0`__ files.
 
-The XRD format supercedes the XRDS format defined in XRI 2.0.
+XRD files are used for ``.well-known/host-meta`` files as standardized in
+`RFC 6415: Web Host Metadata`__, as well as in the 
+`LRDD (Link-based Resource Descriptor Discovery)`__ files linked from it.
 
+The LRDD XRD files can be used to discover information about users by just their
+e-mail address, e.g. the OpenID provider.
+This is the foundation of Webfinger__, which lets people use their e-mail address
+to do OpenID sign in.
+
+The XRD format supercedes the XRDS format defined in XRI 2.0, which is used in
+the `Yadis communications protocol`__.
+
+__ http://docs.oasis-open.org/xri/xrd/v1.0/xrd-1.0.html
+__ http://tools.ietf.org/html/rfc6415
+__ http://tools.ietf.org/html/draft-hammer-discovery-06
+__ http://code.google.com/p/webfinger/wiki/WebFingerProtocol
+__ http://yadis.org/
+
+.. contents::
 
 ========
 Examples
 ========
 
-Load from file
-==============
+Real-world example
+==================
+
+Fetching LRDD URI from host-meta
+================================
 ::
 
     <?php
     require_once 'XML/XRD.php';
     $xrd = new XML_XRD();
-    $xrd->loadFile('/path/to/my.xrd');
+    try {
+        $xrd->loadFile('http://cweiske.de/.well-known/host-meta');
+    } catch (XML_XRD_Exception $e) {
+        die('Loading XRD file failed: '  . $e->getMessage());
+    }
+    $link = $xrd->get('lrdd', 'application/xrd+xml');
+    if ($link === null) {
+        die('No LRDD link found');
+    }
+    $template = $link->template;
+    $lrddUri = str_replace('{uri}', urlencode('cweiske@cweiske.de'), $template);
+    echo 'URL with infos about cweiske@cweiske.de is ' . $lrddUri . "\n";
+
+
+Loading XRD files
+=================
+
+Load from file
+--------------
+::
+
+    <?php
+    require_once 'XML/XRD.php';
+    $xrd = new XML_XRD();
+    try {
+        $xrd->loadFile('/path/to/my.xrd');
+    } catch (XML_XRD_Exception $e) {
+        die('Loading XRD file failed: '  . $e->getMessage());
+    }
 
 
 Load from string
-================
+----------------
 ::
 
     <?php
@@ -34,11 +82,18 @@ Load from string
 
     require_once 'XML/XRD.php';
     $xrd = new XML_XRD();
-    $xrd->loadString($myxrd);
+    try {
+        $xrd->loadString($myxrd);
+    } catch (XML_XRD_Exception $e) {
+        die('Loading XRD string failed: '  . $e->getMessage());
+    }
 
+
+Verification
+============
 
 Verify subject
-==============
+--------------
 Check if the XRD file really describes the resource/URL that we requested the
 XRD for::
 
@@ -53,8 +108,11 @@ XRD for::
 The ``<subject>`` and all ``<alias>`` tags are checked.
 
 
+Links
+=====
+
 Get all links
-=============
+-------------
 ::
 
     <?php
@@ -67,7 +125,7 @@ Get all links
 
 
 Get link by relation
-====================
+--------------------
 Returns the first link that has the given ``relation``::
 
     <?php
@@ -79,7 +137,7 @@ Returns the first link that has the given ``relation``::
 
 
 Get link by relation + optional type
-====================================
+------------------------------------
 If no link with the given ``type`` is found, the first link with the correct
 ``relation`` and an empty ``type`` will be returned::
 
@@ -92,7 +150,7 @@ If no link with the given ``type`` is found, the first link with the correct
 
 
 Get link by relation + type
-===========================
+---------------------------
 The ``relation`` and the ``type`` both need to match exactly::
 
     <?php
@@ -104,7 +162,7 @@ The ``relation`` and the ``type`` both need to match exactly::
 
 
 Get all links by relation
-=========================
+-------------------------
 ::
 
     <?php
@@ -116,8 +174,11 @@ Get all links by relation
     }
 
 
+Properties
+==========
+
 Get a single property
-=====================
+---------------------
 ::
 
     <?php
@@ -130,7 +191,7 @@ Get a single property
 
 
 Get all properties
-==================
+------------------
 ::
 
     <?php
@@ -143,7 +204,7 @@ Get all properties
 
 
 Get all properties of a type
-============================
+----------------------------
 ::
 
     <?php
@@ -159,22 +220,12 @@ Get all properties of a type
 TODO
 ====
 
-+ load from string
-+ load from file
-+ verify that subject/alias matches
-+ get properties
-+ get links
-
-  + all links
-  + links with certain properties set
-
-- get expiry time
 - XML signature verification
 - (very optional) XRDS (multiple XRD)?
 
-==========
-References
-==========
+=====
+Links
+=====
 
 - Standard: http://docs.oasis-open.org/xri/xrd/v1.0/xrd-1.0.html
 - http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xri
