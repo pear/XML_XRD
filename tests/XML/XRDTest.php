@@ -97,7 +97,7 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd-1.0-b1.xrd');
         $links = array();
-        foreach ($this->xrd as $link) {
+        foreach ($this->xrd as $key => $link) {
             $this->assertInstanceOf('XML_XRD_Element_Link', $link);
             $links[] = $link;
         }
@@ -205,6 +205,7 @@ XRD;
     public function testArrayAccess()
     {
         $this->xrd->loadFile(__DIR__ . '/../properties.xrd');
+        $this->assertTrue(isset($this->xrd['name']));
         $this->assertEquals('Stevie', $this->xrd['name']);
         $this->assertEquals('green', $this->xrd['color']);
         $this->assertNull($this->xrd['empty']);
@@ -223,6 +224,22 @@ XRD;
         $this->xrd->loadFile(__DIR__ . '/../properties.xrd');
         $this->assertFalse(isset($this->xrd['doesnotexist']));
         $this->assertNull($this->xrd['doesnotexist']);
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testArrayAccessSet()
+    {
+        $this->xrd['foo'] = 'bar';
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testArrayAccessUnset()
+    {
+        unset($this->xrd['foo']);
     }
 
     public function testGetPropertiesAll()
