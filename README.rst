@@ -108,8 +108,9 @@ XRD for::
 The ``<subject>`` and all ``<alias>`` tags are checked.
 
 
-Links
-=====
+
+Link finding
+============
 
 Get all links
 -------------
@@ -216,6 +217,30 @@ Get all properties of a type
     }
 
 
+Working with Links
+==================
+
+Accessing link attributes
+-------------------------
+::
+
+    <?php
+    $link = $xrd->get('http://specs.openid.net/auth/2.0/provider');
+
+    $title = $link->getTitle('de');
+    $url   = $link->href;
+    $urlTemplate = $link->template;
+    $mimetype    = $link->type;
+
+Additional link properties
+--------------------------
+Works just like properties in the XRD document::
+
+    <?php
+    $link = $xrd->get('http://specs.openid.net/auth/2.0/provider');
+    $prop = $link['foo'];
+
+
 ====
 TODO
 ====
@@ -227,6 +252,18 @@ TODO
 Links
 =====
 
-- Standard: http://docs.oasis-open.org/xri/xrd/v1.0/xrd-1.0.html
-- http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xri
-- http://code.google.com/p/webfinger/wiki/XrdFiles
+- `XRD 1.0 standard specification`__
+- `OASIS XRI committee`__
+- `WebFinger protocol draft`__
+- `WebFinger: Common Link relations`__
+- `RFC 5785: Defining Well-Known Uniform Resource Identifiers`__
+- `RFC 6415: Web Host Metadata`__
+- `LRDD (Link-based Resource Descriptor Discovery) draft`__
+
+__ http://docs.oasis-open.org/xri/xrd/v1.0/xrd-1.0.html
+__ http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xri
+__ http://code.google.com/p/webfinger/wiki/WebFingerProtocol
+__ http://code.google.com/p/webfinger/wiki/CommonLinkRelations
+__ http://tools.ietf.org/html/rfc5785
+__ http://tools.ietf.org/html/rfc6415
+__ http://tools.ietf.org/html/draft-hammer-discovery-06
