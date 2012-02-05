@@ -70,7 +70,21 @@ class XML_XRD_Element_Link extends XML_XRD_PropertyAccess
      *
      * @param object $x SimpleXMLElement representing the <Link>
      */
-    public function __construct(SimpleXMLElement $x)
+    public function __construct(SimpleXMLElement $x = null)
+    {
+        if ($x) {
+            $this->loadFromSimpleXml($x);
+        }
+    }
+
+    /**
+     * Loads data from a SimpleXMLElement into the object.
+     *
+     * @param object $x SimpleXMLElement representing the <Link>
+     *
+     * @return void
+     */
+    protected function loadFromSimpleXml(SimpleXMLElement $x)
     {
         foreach (array('rel', 'type', 'href', 'template') as $var) {
             if (isset($x[$var])) {
