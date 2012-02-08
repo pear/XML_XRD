@@ -25,11 +25,21 @@ class XML_XRD_Serializer_XML
 {
     protected $xrd;
 
+    /**
+     * Create new instance
+     *
+     * @param XML_XRD $xrd XRD instance to convert to XML
+     */
     public function __construct(XML_XRD $xrd)
     {
         $this->xrd = $xrd;
     }
 
+    /**
+     * Generate XML.
+     *
+     * @return string Full XML code
+     */
     public function __toString()
     {
         $x = new XMLWriter();
@@ -45,7 +55,9 @@ class XML_XRD_Serializer_XML
             $x->writeElement('Alias', $alias);
         }
         if ($this->xrd->expires !== null) {
-            $x->writeElement('Expires', gmdate('Y-m-d\TH:i:s\Z', $this->xrd->expires));
+            $x->writeElement(
+                'Expires', gmdate('Y-m-d\TH:i:s\Z', $this->xrd->expires)
+            );
         }
 
         foreach ($this->xrd->properties as $property) {
@@ -85,6 +97,14 @@ class XML_XRD_Serializer_XML
         return $x->flush();
     }
 
+    /**
+     * Write a property in the XMLWriter stream output
+     *
+     * @param XMLWriter                $x        Writer object to write to
+     * @param XML_XRD_Element_Property $property Property to write
+     *
+     * @return void
+     */
     protected function writeProperty(
         XMLWriter $x, XML_XRD_Element_Property $property
     ) {
