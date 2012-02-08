@@ -48,7 +48,7 @@ Fetching LRDD URI from host-meta
         die('No LRDD link found');
     }
     $template = $link->template;
-    $lrddUri = str_replace('{uri}', urlencode('cweiske@cweiske.de'), $template);
+    $lrddUri = str_replace('{uri}', urlencode('acct:cweiske@cweiske.de'), $template);
     echo 'URL with infos about cweiske@cweiske.de is ' . $lrddUri . "\n";
 
 
