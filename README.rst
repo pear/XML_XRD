@@ -2,7 +2,8 @@
 XML_XRD
 *******
 
-PHP library to parse `Extensible Resource Descriptor (XRD) Version 1.0`__ files.
+PHP library to parse and generate
+`Extensible Resource Descriptor (XRD) Version 1.0`__ files.
 
 XRD files are used for ``.well-known/host-meta`` files as standardized in
 `RFC 6415: Web Host Metadata`__, as well as in the 
