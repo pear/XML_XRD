@@ -274,6 +274,18 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
     {
         return new ArrayIterator($this->links);
     }
+    
+    /**
+     * Converts this XRD object to XML.
+     *
+     * @return string Generated XML
+     */
+    public function toXML()
+    {
+        include_once 'XML/XRD/Serializer/XML.php';
+        $s = new XML_XRD_Serializer_XML($this);
+        return (string)$s;
+    }
 }
 
 ?>
