@@ -21,8 +21,8 @@ require_once 'XML/XRD/Exception.php';
  * After loading the file, access to links is possible with get() and getAll(),
  * as well as foreach-iterating over the XML_XRD object.
  *
- * Property access is possible with getProperties() and array access on the
- * XML_XRD object.
+ * Property access is possible with getProperties() and array access (foreach)
+ * on the XML_XRD object.
  *
  * Verification that the subject/aliases match the requested URL can be done with
  * describes().
@@ -34,7 +34,7 @@ require_once 'XML/XRD/Exception.php';
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD extends XML_XRD_PropertyAccess implements Iterator
+class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
 {
     /**
      * XRD subject
@@ -71,11 +71,6 @@ class XML_XRD extends XML_XRD_PropertyAccess implements Iterator
      * @var string|null
      */
     public $id;
-
-    /**
-     * Position of the iterator
-     */
-    protected $iteratorPos = 0;
 
     /**
      * XRD 1.0 namespace
@@ -269,63 +264,15 @@ class XML_XRD extends XML_XRD_PropertyAccess implements Iterator
     }
 
     /**
-     * Get the current iterator's link object
+     * Return the iterator object to loop over the links
      *
-     * Part of the Iterator interface
+     * Part of the IteratorAggregate interface
      *
-     * @return XML_XRD_Element_Link Link element
+     * @return Traversable Iterator for the links
      */
-    public function current()
+    public function getIterator()
     {
-        return $this->links[$this->iteratorPos];
-    }
-
-    /**
-     * Move to the next link object
-     *
-     * Part of the Iterator interface
-     *
-     * @return void
-     */
-    public function next()
-    {
-        ++$this->iteratorPos;
-    }
-
-    /**
-     * Get the current iterator key
-     *
-     * Part of the Iterator interface
-     *
-     * @return integer Iterator position
-     */
-    public function key()
-    {
-        return $this->iteratorPos;
-    }
-
-    /**
-     * Check if the current iterator position is valid
-     *
-     * Part of the Iterator interface
-     *
-     * @return boolean True if the current position is valid
-     */
-    public function valid()
-    {
-        return isset($this->links[$this->iteratorPos]);
-    }
-
-    /**
-     * Reset the iterator position back to the first element
-     *
-     * Part of the Iterator interface
-     *
-     * @return void
-     */
-    public function rewind()
-    {
-        $this->iteratorPos = 0;
+        return new ArrayIterator($this->links);
     }
 }
 
