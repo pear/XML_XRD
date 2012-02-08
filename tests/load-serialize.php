@@ -1,4 +1,8 @@
 <?php
+/**
+ * Test script to load an XRD file and save it again.
+ * The result should be equal.
+ */
 if (is_dir(__DIR__ . '/../src/')) {
     set_include_path(
         __DIR__ . '/../src/' . PATH_SEPARATOR . get_include_path()
