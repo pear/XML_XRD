@@ -242,6 +242,55 @@ Works just like properties in the XRD document::
     $prop = $link['foo'];
 
 
+Generating XRD files
+====================
+
+.well-known/host-meta
+---------------------
+As described by RFC 6415::
+
+    <?php
+    require_once 'XML/XRD.php';
+    $x = new XML_XRD();
+    $x->subject = 'example.org';
+    $x->aliases[] = 'example.com';
+    $x->links[] = new XML_XRD_Element_Link(
+        'lrdd', 'http://example.org/gen-lrdd.php?a={uri}',
+        'application/xrd+xml', true
+    );
+    echo $x->toXML();
+    ?>
+
+If you want a JSON file for JRD::
+
+    echo $x->toJSON();
+
+
+LRDD file
+---------
+::
+
+    <?php
+    require_once 'XML/XRD.php';
+    $x = new XML_XRD();
+    $x->subject = 'user@example.org';
+    
+    //add link to the user's OpenID
+    $x->links[] = new XML_XRD_Element_Link(
+        'http://specs.openid.net/auth/2.0/provider',
+        'http://id.example.org/user'
+    );
+    //add link to user's home page
+    $x->links[] = new XML_XRD_Element_Link(
+        'http://xmlns.com/foaf/0.1/homepage',
+        'http://example.org/~user/'
+    );
+    
+    echo $x->toXML();
+    ?>
+    
+    
+
 ====
 TODO
 ====
@@ -257,6 +306,7 @@ Links
 - `OASIS XRI committee`__
 - `WebFinger protocol draft`__
 - `WebFinger: Common Link relations`__
+- `More link relations`__
 - `RFC 5785: Defining Well-Known Uniform Resource Identifiers`__
 - `RFC 6415: Web Host Metadata`__
 - `LRDD (Link-based Resource Descriptor Discovery) draft`__
@@ -265,6 +315,7 @@ __ http://docs.oasis-open.org/xri/xrd/v1.0/xrd-1.0.html
 __ http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xri
 __ http://code.google.com/p/webfinger/wiki/WebFingerProtocol
 __ http://code.google.com/p/webfinger/wiki/CommonLinkRelations
+__ http://search.cpan.org/~tobyink/WWW-Finger-0.101/lib/WWW/Finger/Webfinger.pm
 __ http://tools.ietf.org/html/rfc5785
 __ http://tools.ietf.org/html/rfc6415
 __ http://tools.ietf.org/html/draft-hammer-discovery-06
