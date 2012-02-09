@@ -288,7 +288,7 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
     }
 
     /**
-     * Converts this XRD object to JSON.
+     * Converts this XRD object to JSON (for JRD files, "host-meta.json").
      *
      * @return string Generated JSON string
      */
