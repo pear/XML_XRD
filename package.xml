@@ -10,9 +10,9 @@
 >
  <name>XML_XRD</name>
  <channel>pear.php.net</channel>
- <summary>PHP library to parse "Extensible Resource Descriptor" (XRD) files</summary>
+ <summary>PHP library to parse and generate "Extensible Resource Descriptor" (XRD) files</summary>
  <description>
-PHP library to parse "Extensible Resource Descriptor (XRD) Version 1.0" files.
+PHP library to parse and generate "Extensible Resource Descriptor (XRD) Version 1.0" files.
 
 XRD files are used for ".well-known/host-meta" files as standardized in
 "RFC 6415: Web Host Metadata", as well as in the 
@@ -34,11 +34,11 @@ the Yadis communications protocol.
   <active>yes</active>
  </lead>
 
- <date>2012-02-01</date>
+ <date>2012-02-09</date>
 
  <version>
-  <release>0.1.0</release>
-  <api>0.1.0</api>
+  <release>0.2.0</release>
+  <api>0.2.0</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -47,7 +47,7 @@ the Yadis communications protocol.
  <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL</license>
 
  <notes>
-  - First public version
+  Generating XRD and JRD files is possible now
  </notes>
 
  <contents>
@@ -62,12 +62,18 @@ the Yadis communications protocol.
        <file name="Link.php"          role="php" install-as="XML/XRD/Element/Link.php" />
        <file name="Property.php"      role="php" install-as="XML/XRD/Element/Property.php" />
       </dir>
+      <dir name="Serializer">
+       <file name="JSON.php"          role="php" install-as="XML/XRD/Serializer/JSON.php" />
+       <file name="XML.php"           role="php" install-as="XML/XRD/Serializer/XML.php" />
+      </dir>
      </dir>
     </dir>
    </dir><!-- /src -->
    <dir name="examples">
+    <file name="gen-lrdd.php"         role="doc" />
+    <file name="gen-host-meta.php"    role="doc" />
     <file name="webfinger.php"        role="doc" />
-   </dir>
+   </dir><!-- /examples -->
    <dir name="tests">
     <file name="expires.xrd"          role="test" />
     <file name="link-template.xrd"    role="test" />
@@ -75,13 +81,21 @@ the Yadis communications protocol.
     <file name="multilinks.xrd"       role="test" />
     <file name="phpunit.xml"          role="test" />
     <file name="properties.xrd"       role="test" />
+    <file name="rfc6415-A.jrd"        role="test" />
+    <file name="rfc6415-A.xrd"        role="test" />
     <file name="xrd-1.0-b1.xrd"       role="test" />
     <file name="xrd-1.0-b2.xrd"       role="test" />
+    <file name="xrd-1.0-b2-nosig.xrd" role="test" />
     <dir name="XML">
      <file name="XRDTest.php"         role="test" />
      <dir name="XRD">
       <dir name="Element">
-       <file name="LinkTest.php"        role="test" />
+       <file name="PropertyTest.php"  role="test" />
+       <file name="LinkTest.php"      role="test" />
+      </dir>
+      <dir name="Serializer">
+       <file name="JSONTest.php"      role="test" />
+       <file name="XMLTest.php"       role="test" />
       </dir>
      </dir>
     </dir>
@@ -102,6 +116,22 @@ the Yadis communications protocol.
 
  <phprelease />
  <changelog>
+
+  <release>
+   <version>
+    <release>0.2.0</release>
+    <api>0.2.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2012-02-09</date>
+   <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL</license>
+   <notes>
+    Generating XRD and JRD files is possible now
+   </notes>
+  </release>
 
   <release>
    <version>
