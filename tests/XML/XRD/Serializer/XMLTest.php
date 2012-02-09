@@ -18,6 +18,11 @@ class XML_XRD_Serializer_XMLTest extends PHPUnit_Framework_TestCase
         $this->assertXmlIsCorrect(__DIR__ . '/../../../link-template.xrd');
     }
 
+    public function testXrdRfc6415A()
+    {
+        $this->assertXmlIsCorrect(__DIR__ . '/../../../rfc6415-A.xrd');
+    }
+
     protected function assertXmlIsCorrect($file)
     {
         $xrd = new XML_XRD();
