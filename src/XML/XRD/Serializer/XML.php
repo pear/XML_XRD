@@ -44,22 +44,27 @@ class XML_XRD_Serializer_XML
     {
         $x = new XMLWriter();
         $x->openMemory();
+        //no encoding means UTF-8
+        //http://www.w3.org/TR/2008/REC-xml-20081126/#sec-guessing-no-ext-info
         $x->startDocument('1.0', 'UTF-8');
         $x->setIndent(true);
         $x->startElement('XRD');
         $x->writeAttribute('xmlns', 'http://docs.oasis-open.org/ns/xri/xrd-1.0');
         $x->writeAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-
-        $x->writeElement('Subject', $this->xrd->subject);
-        foreach ($this->xrd->aliases as $alias) {
-            $x->writeElement('Alias', $alias);
+        if ($this->xrd->id) {
+            $x->writeAttribute('xml:id', $this->xrd->id);
         }
+
         if ($this->xrd->expires !== null) {
             $x->writeElement(
                 'Expires', gmdate('Y-m-d\TH:i:s\Z', $this->xrd->expires)
             );
         }
 
+        $x->writeElement('Subject', $this->xrd->subject);
+        foreach ($this->xrd->aliases as $alias) {
+            $x->writeElement('Alias', $alias);
+        }
         foreach ($this->xrd->properties as $property) {
             $this->writeProperty($x, $property);
         }
