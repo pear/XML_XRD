@@ -14,6 +14,35 @@ class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('XML_XRD_Element_Link', $this->link);
     }
 
+    public function test__constructParamHref()
+    {
+        $link = new XML_XRD_Element_Link(
+            'http://spec.example.net/photo/1.0',
+            'http://photos.example.com/gpburdell.jpg',
+            'image/jpeg'
+        );
+        $this->assertEquals('http://spec.example.net/photo/1.0', $link->rel);
+        $this->assertEquals('http://photos.example.com/gpburdell.jpg', $link->href);
+        $this->assertEquals('image/jpeg', $link->type);
+        $this->assertNull($link->template);
+    }
+
+    public function test__constructParamHrefTemplate()
+    {
+        $link = new XML_XRD_Element_Link(
+            'lrdd',
+            'http://example.org/webfinger/{uri}',
+            'application/xrd+xml',
+            true
+        );
+        $this->assertEquals('lrdd', $link->rel);
+        $this->assertNull($link->href);
+        $this->assertEquals('application/xrd+xml', $link->type);
+        $this->assertEquals('http://example.org/webfinger/{uri}', $link->template);
+    }
+
+
+
     public function testPropertyRel()
     {
         $this->assertEquals('http://spec.example.net/photo/1.0', $this->link->rel);

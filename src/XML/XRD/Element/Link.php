@@ -68,12 +68,27 @@ class XML_XRD_Element_Link extends XML_XRD_PropertyAccess
     /**
      * Create a new instance and load data from the XML element
      *
-     * @param object $x SimpleXMLElement representing the <Link>
+     * @param SimpleXMLElement|string $relOrXml   SimpleXMLElement representing
+     *                                            the <Link>
+     *                                            or string with the relation.
+     * @param string                  $href       HREF value
+     * @param string                  $type       Type value
+     * @param boolean                 $isTemplate When set to true, the $href is
+     *                                            used as template
      */
-    public function __construct(SimpleXMLElement $x = null)
-    {
-        if ($x) {
-            $this->loadFromSimpleXml($x);
+    public function __construct(
+        $relOrXml = null, $href = null, $type = null, $isTemplate = false
+    ) {
+        if ($relOrXml instanceof SimpleXMLElement) {
+            $this->loadFromSimpleXml($relOrXml);
+        } else {
+            $this->rel = $relOrXml;
+            if ($isTemplate) {
+                $this->template = $href;
+            } else {
+                $this->href = $href;
+            }
+            $this->type = $type;
         }
     }
 
