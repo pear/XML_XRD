@@ -42,6 +42,7 @@ class XML_XRD_Serializer_XML
      */
     public function __toString()
     {
+        $hasXsi = false;
         $x = new XMLWriter();
         $x->openMemory();
         //no encoding means UTF-8
@@ -67,7 +68,7 @@ class XML_XRD_Serializer_XML
             $x->writeElement('Alias', $alias);
         }
         foreach ($this->xrd->properties as $property) {
-            $this->writeProperty($x, $property);
+            $this->writeProperty($x, $property, $hasXsi);
         }
 
         foreach ($this->xrd->links as $link) {
@@ -93,14 +94,20 @@ class XML_XRD_Serializer_XML
                 $x->endElement();
             }
             foreach ($link->properties as $property) {
-                $this->writeProperty($x, $property);
+                $this->writeProperty($x, $property, $hasXsi);
             }
             $x->endElement();
         }
 
         $x->endElement();
         $x->endDocument();
-        return $x->flush();
+        $s = $x->flush();
+        if (!$hasXsi) {
+            $s = str_replace(
+                ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"', '', $s
+            );
+        }
+        return $s;
     }
 
     /**
@@ -108,16 +115,18 @@ class XML_XRD_Serializer_XML
      *
      * @param XMLWriter                $x        Writer object to write to
      * @param XML_XRD_Element_Property $property Property to write
+     * @param boolean                  &$hasXsi  If an xsi: attribute is used
      *
      * @return void
      */
     protected function writeProperty(
-        XMLWriter $x, XML_XRD_Element_Property $property
+        XMLWriter $x, XML_XRD_Element_Property $property, &$hasXsi
     ) {
         $x->startElement('Property');
         $x->writeAttribute('type', $property->type);
         if ($property->value === null) {
             $x->writeAttribute('xsi:nil', 'true');
+            $hasXsi = true;
         } else {
             $x->text($property->value);
         }
