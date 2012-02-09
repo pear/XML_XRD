@@ -13,6 +13,11 @@ class XML_XRD_Serializer_XMLTest extends PHPUnit_Framework_TestCase
         $this->assertXmlIsCorrect(__DIR__ . '/../../../xrd-1.0-b2-nosig.xrd');
     }
 
+    public function testXrdTemplate()
+    {
+        $this->assertXmlIsCorrect(__DIR__ . '/../../../link-template.xrd');
+    }
+
     protected function assertXmlIsCorrect($file)
     {
         $xrd = new XML_XRD();

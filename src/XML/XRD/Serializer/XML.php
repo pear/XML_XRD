@@ -60,8 +60,9 @@ class XML_XRD_Serializer_XML
                 'Expires', gmdate('Y-m-d\TH:i:s\Z', $this->xrd->expires)
             );
         }
-
-        $x->writeElement('Subject', $this->xrd->subject);
+        if ($this->xrd->subject !== null) {
+            $x->writeElement('Subject', $this->xrd->subject);
+        }
         foreach ($this->xrd->aliases as $alias) {
             $x->writeElement('Alias', $alias);
         }
