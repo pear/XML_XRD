@@ -43,7 +43,7 @@ class XML_XRD_Serializer_JSON
      */
     public function __toString()
     {
-        $o = null;
+        $o = new stdClass();
         if ($this->xrd->expires !== null) {
             $o->expires = gmdate('Y-m-d\TH:i:s\Z', $this->xrd->expires);
         }
@@ -56,8 +56,10 @@ class XML_XRD_Serializer_JSON
         foreach ($this->xrd->properties as $property) {
             $o->properties[$property->type] = $property->value;
         }
+        $o->links = array();
         foreach ($this->xrd->links as $link) {
-            $lid = isset($o->links) ? count($o->links) : 0;
+            $lid = count($o->links);
+            $o->links[$lid] = new stdClass();
             if ($link->rel) {
                 $o->links[$lid]->rel = $link->rel;
             }
@@ -80,6 +82,9 @@ class XML_XRD_Serializer_JSON
             foreach ($link->properties as $property) {
                 $o->links[$lid]->properties[$property->type] = $property->value;
             }
+        }
+        if (count($o->links) == 0) {
+            unset($o->links);
         }
 
         return json_encode($o);
