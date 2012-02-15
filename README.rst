@@ -288,7 +288,23 @@ LRDD file
     
     echo $x->toXML();
     ?>
-    
+
+
+
+==============
+Error handling
+==============
+
+When loading a file, exceptions of type ``XML_XRD_Exceptino`` may be thrown.
+All other parts of the code do not throw exceptions but fail gracefully by returning
+``null``, e.g. when a property does not exist.
+
+Using ``loadFile()`` may result in PHP warnings like::
+
+  Warning: simplexml_load_file(https://example.org/) failed to open stream: Connection refused
+
+This cannot be prevented properly, so you either have to silence it with ``@``
+or fetch the file manually and use ``loadString()``.
     
 
 ====
