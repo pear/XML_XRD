@@ -34,11 +34,11 @@ the Yadis communications protocol.
   <active>yes</active>
  </lead>
 
- <date>2012-02-10</date>
+ <date>2012-02-15</date>
 
  <version>
-  <release>0.2.1</release>
-  <api>0.2.0</api>
+  <release>0.2.2</release>
+  <api>0.2.2</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -47,7 +47,7 @@ the Yadis communications protocol.
  <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL</license>
 
  <notes>
-  Add AllTests.php for "pear run-tests -pu XML_XRD"
+  All exceptions are catchable with XML_XRD_Exception now
  </notes>
 
  <contents>
@@ -57,6 +57,8 @@ the Yadis communications protocol.
      <file name="XRD.php"             role="php" install-as="XML/XRD.php" />
      <dir name="XRD">
       <file name="Exception.php"      role="php" install-as="XML/XRD/Exception.php" />
+      <file name="LoadFileException.php" role="php" install-as="XML/XRD/LoadFileException.php" />
+      <file name="LogicException.php" role="php" install-as="XML/XRD/LogicException.php" />
       <file name="PropertyAccess.php" role="php" install-as="XML/XRD/PropertyAccess.php" />
       <dir name="Element">
        <file name="Link.php"          role="php" install-as="XML/XRD/Element/Link.php" />
@@ -117,6 +119,22 @@ the Yadis communications protocol.
 
  <phprelease />
  <changelog>
+
+  <release>
+   <version>
+    <release>0.2.2</release>
+    <api>0.2.2</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2012-02-15</date>
+   <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL</license>
+   <notes>
+    All exceptions are catchable with XML_XRD_Exception now
+   </notes>
+  </release>
 
   <release>
    <version>
