@@ -28,7 +28,7 @@ XRD;
     }
 
     /**
-     * @expectedException XML_XRD_Exception
+     * @expectedException XML_XRD_LoadFileException
      * @expectedExceptionMessage Error loading XML string: string empty
      */
     public function testLoadStringFailEmpty()
@@ -37,7 +37,7 @@ XRD;
     }
 
     /**
-     * @expectedException XML_XRD_Exception
+     * @expectedException XML_XRD_LoadFileException
      * @expectedExceptionMessage Error loading XML string: Start tag expected
      */
     public function testLoadStringFailBroken()
@@ -46,7 +46,7 @@ XRD;
     }
 
     /**
-     * @expectedException XML_XRD_Exception
+     * @expectedException XML_XRD_LoadFileException
      * @expectedExceptionMessage Wrong document namespace
      */
     public function testLoadXmlWrongNamespace()
@@ -61,7 +61,7 @@ XRD;
     }
 
     /**
-     * @expectedException XML_XRD_Exception
+     * @expectedException XML_XRD_LoadFileException
      * @expectedExceptionMessage XML root element is not "XRD"
      */
     public function testLoadXmlWrongRootElement()
@@ -83,7 +83,7 @@ XRD;
     }
 
     /**
-     * @expectedException XML_XRD_Exception
+     * @expectedException XML_XRD_LoadFileException
      * @expectedExceptionMessage Error loading XML file: failed to load external entity
      */
     public function testLoadFileNonExisting()
@@ -273,7 +273,7 @@ XRD;
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException XML_XRD_LogicException
      */
     public function testArrayAccessSet()
     {
@@ -281,7 +281,7 @@ XRD;
     }
 
     /**
-     * @expectedException LogicException
+     * @expectedException XML_XRD_LogicException
      */
     public function testArrayAccessUnset()
     {

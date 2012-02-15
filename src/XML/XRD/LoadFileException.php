@@ -11,10 +11,10 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
+require_once 'XML/XRD/Exception.php';
+
 /**
- * Base exception interface for all XML_XRD related exceptions.
- * With that interface, it is possible to catch all XML_XRD exceptions
- * with a single catch statement.
+ * XML_XRD exception that's thrown when loading the XRD fails.
  *
  * @category XML
  * @package  XML_XRD
@@ -23,8 +23,22 @@
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-interface XML_XRD_Exception
+class XML_XRD_LoadFileException extends Exception implements XML_XRD_Exception
 {
+    /**
+     * The document namespace is not the XRD 1.0 namespace
+     */
+    const DOC_NS = 10;
+
+    /**
+     * The document root element is not XRD
+     */
+    const DOC_ROOT = 11;
+
+    /**
+     * Error loading the XML
+     */
+    const LOAD_XML = 12;
 }
 
 ?>

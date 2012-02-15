@@ -11,6 +11,7 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
+require_once 'XML/XRD/LogicException.php';
 require_once 'XML/XRD/Element/Property.php';
 
 /**
@@ -98,10 +99,12 @@ abstract class XML_XRD_PropertyAccess implements ArrayAccess
      * @param string $value New property value
      *
      * @return void
+     *
+     * @throws XML_XRD_LogicException Always
      */
     public function offsetSet($type, $value)
     {
-        throw new LogicException('Changing properties not implemented');
+        throw new XML_XRD_LogicException('Changing properties not implemented');
     }
 
     /**
@@ -112,10 +115,12 @@ abstract class XML_XRD_PropertyAccess implements ArrayAccess
      * @param string $type Property type to check for
      *
      * @return void
+     *
+     * @throws XML_XRD_LogicException Always
      */
     public function offsetUnset($type)
     {
-        throw new LogicException('Changing properties not implemented');
+        throw new XML_XRD_LogicException('Changing properties not implemented');
     }
 
     /**
