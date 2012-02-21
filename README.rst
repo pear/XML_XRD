@@ -201,7 +201,7 @@ Get all properties
     $xrd = new XML_XRD();
     $xrd->loadFile('http://example.org/.well-known/host-meta');
     foreach ($xrd->getProperties() as $property) {
-        echo $property->type . ': ' . $property->value . "\n",
+        echo $property->type . ': ' . $property->value . "\n";
     }
 
 
@@ -214,7 +214,7 @@ Get all properties of a type
     $xrd = new XML_XRD();
     $xrd->loadFile('http://example.org/.well-known/host-meta');
     foreach ($xrd->getProperties('http://spec.example.net/type/person') as $property) {
-        echo $property->type . ': ' . $property->value . "\n",
+        echo $property->type . ': ' . $property->value . "\n";
     }
 
 
@@ -295,7 +295,7 @@ LRDD file
 Error handling
 ==============
 
-When loading a file, exceptions of type ``XML_XRD_Exceptino`` may be thrown.
+When loading a file, exceptions of type ``XML_XRD_Exception`` may be thrown.
 All other parts of the code do not throw exceptions but fail gracefully by returning
 ``null``, e.g. when a property does not exist.
 
