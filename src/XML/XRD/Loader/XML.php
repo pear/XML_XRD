@@ -100,7 +100,7 @@ class XML_XRD_Loader_XML
         XML_XRD_PropertyAccess $store, SimpleXMLElement $x
     ) {
         foreach ($x->Property as $xProp) {
-            $store->properties[] = new XML_XRD_Element_Property($xProp);
+            $store->properties[] = $this->loadProperty($xProp);
         }
     }
 
@@ -133,6 +133,27 @@ class XML_XRD_Loader_XML
         $this->loadProperties($link, $x);
 
         return $link;
+    }
+
+    /**
+     * Create a property element object from XML element
+     *
+     * @param object $x XML property element
+     *
+     * @return XML_XRD_Element_Property Created link object
+     */
+    protected function loadProperty(SimpleXMLElement $x)
+    {
+        $prop = new XML_XRD_Element_Property();
+        if (isset($x['type'])) {
+            $prop->type = (string)$x['type'];
+        }
+        $s = (string)$x;
+        if ($s != '') {
+            $prop->value = $s;
+        }
+
+        return $prop;
     }
 }
 ?>

@@ -40,29 +40,15 @@ class XML_XRD_Element_Property
     public $type;
 
     /**
-     * Create a new instance and load data from the XML element
+     * Create a new instance
      *
-     * @param SimpleXMLElement|string $typeOrXml SimpleXMLElement representing
-     *                                           the <Property>, or a string
-     *                                           representing the property type
-     * @param string                  $value     Value of the property, may be
-     *                                           NULL. Ignored when $x is a
-     *                                           SimpleXMLElement
+     * @param string $type  String representing the property type
+     * @param string $value Value of the property, may be NULL
      */
-    public function __construct($typeOrXml = null, $value = null)
+    public function __construct($type = null, $value = null)
     {
-        if ($typeOrXml instanceof SimpleXMLElement) {
-            if (isset($typeOrXml['type'])) {
-                $this->type = (string)$typeOrXml['type'];
-            }
-            $s = (string)$typeOrXml;
-            if ($s != '') {
-                $this->value = $s;
-            }
-        } else {
-            $this->type  = $typeOrXml;
-            $this->value = $value;
-        }
+        $this->type  = $type;
+        $this->value = $value;
     }
 }
 
