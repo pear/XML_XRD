@@ -14,6 +14,7 @@
 require_once 'XML/XRD/PropertyAccess.php';
 require_once 'XML/XRD/Element/Link.php';
 require_once 'XML/XRD/LoadFileException.php';
+require_once 'XML/XRD/Loader/XML.php';
 
 /**
  * Main class used to load XRD documents from string or file.
@@ -144,39 +145,8 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      */
     protected function load(SimpleXMLElement $x)
     {
-        $ns = $x->getDocNamespaces();
-        if ($ns[''] !== self::NS_XRD) {
-            throw new XML_XRD_LoadFileException(
-                'Wrong document namespace', XML_XRD_LoadFileException::DOC_NS
-            );
-        }
-        if ($x->getName() != 'XRD') {
-            throw new XML_XRD_LoadFileException(
-                'XML root element is not "XRD"', XML_XRD_LoadFileException::DOC_ROOT
-            );
-        }
-
-        if (isset($x->Subject)) {
-            $this->subject = (string)$x->Subject;
-        }
-        foreach ($x->Alias as $xAlias) {
-            $this->aliases[] = (string)$xAlias;
-        }
-
-        foreach ($x->Link as $xLink) {
-            $this->links[] = new XML_XRD_Element_Link($xLink);
-        }
-
-        $this->loadProperties($x);
-
-        if (isset($x->Expires)) {
-            $this->expires = strtotime($x->Expires);
-        }
-
-        $xmlAttrs = $x->attributes('http://www.w3.org/XML/1998/namespace');
-        if (isset($xmlAttrs['id'])) {
-            $this->id = (string)$xmlAttrs['id'];
-        }
+        $loader = new XML_XRD_Loader_XML($this);
+        $loader->load($x);
     }
 
     /**

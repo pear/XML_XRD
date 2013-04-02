@@ -68,57 +68,22 @@ class XML_XRD_Element_Link extends XML_XRD_PropertyAccess
     /**
      * Create a new instance and load data from the XML element
      *
-     * @param SimpleXMLElement|string $relOrXml   SimpleXMLElement representing
-     *                                            the <Link>
-     *                                            or string with the relation.
-     * @param string                  $href       HREF value
-     * @param string                  $type       Type value
-     * @param boolean                 $isTemplate When set to true, the $href is
-     *                                            used as template
+     * @param string  $relOrXml   string with the relation name/URL
+     * @param string  $href       HREF value
+     * @param string  $type       Type value
+     * @param boolean $isTemplate When set to true, the $href is
+     *                            used as template
      */
     public function __construct(
-        $relOrXml = null, $href = null, $type = null, $isTemplate = false
+        $rel = null, $href = null, $type = null, $isTemplate = false
     ) {
-        if ($relOrXml instanceof SimpleXMLElement) {
-            $this->loadFromSimpleXml($relOrXml);
+        $this->rel = $rel;
+        if ($isTemplate) {
+            $this->template = $href;
         } else {
-            $this->rel = $relOrXml;
-            if ($isTemplate) {
-                $this->template = $href;
-            } else {
-                $this->href = $href;
-            }
-            $this->type = $type;
+            $this->href = $href;
         }
-    }
-
-    /**
-     * Loads data from a SimpleXMLElement into the object.
-     *
-     * @param object $x SimpleXMLElement representing the <Link>
-     *
-     * @return void
-     */
-    protected function loadFromSimpleXml(SimpleXMLElement $x)
-    {
-        foreach (array('rel', 'type', 'href', 'template') as $var) {
-            if (isset($x[$var])) {
-                $this->$var = (string)$x[$var];
-            }
-        }
-
-        foreach ($x->Title as $xTitle) {
-            $xmlAttrs = $xTitle->attributes('http://www.w3.org/XML/1998/namespace');
-            $lang = '';
-            if (isset($xmlAttrs['lang'])) {
-                $lang = (string)$xmlAttrs['lang'];
-            }
-            if (!isset($this->titles[$lang])) {
-                $this->titles[$lang] = (string)$xTitle;
-            }
-        }
-
-        $this->loadProperties($x);
+        $this->type = $type;
     }
 
     /**

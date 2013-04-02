@@ -39,20 +39,6 @@ abstract class XML_XRD_PropertyAccess implements ArrayAccess
 
 
     /**
-     * Loads the Property elements from XML
-     *
-     * @param object $x XML element
-     *
-     * @return boolean True when all went well
-     */
-    protected function loadProperties(SimpleXMLElement $x)
-    {
-        foreach ($x->Property as $xProp) {
-            $this->properties[] = new XML_XRD_Element_Property($xProp);
-        }
-    }
-
-    /**
      * Check if the property with the given type exists
      *
      * Part of the ArrayAccess interface
