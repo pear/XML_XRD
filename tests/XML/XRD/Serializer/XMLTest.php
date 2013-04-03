@@ -5,22 +5,22 @@ class XML_XRD_Serializer_XMLTest extends PHPUnit_Framework_TestCase
 {
     public function testXrd10B1()
     {
-        $this->assertXmlIsCorrect(__DIR__ . '/../../../xrd-1.0-b1.xrd');
+        $this->assertXmlIsCorrect(__DIR__ . '/../../../xrd/xrd-1.0-b1.xrd');
     }
 
     public function testXrd10B2()
     {
-        $this->assertXmlIsCorrect(__DIR__ . '/../../../xrd-1.0-b2-nosig.xrd');
+        $this->assertXmlIsCorrect(__DIR__ . '/../../../xrd/xrd-1.0-b2-nosig.xrd');
     }
 
     public function testXrdTemplate()
     {
-        $this->assertXmlIsCorrect(__DIR__ . '/../../../link-template.xrd');
+        $this->assertXmlIsCorrect(__DIR__ . '/../../../xrd/link-template.xrd');
     }
 
     public function testXrdRfc6415A()
     {
-        $this->assertXmlIsCorrect(__DIR__ . '/../../../rfc6415-A.xrd');
+        $this->assertXmlIsCorrect(__DIR__ . '/../../../xrd/rfc6415-A.xrd');
     }
 
     protected function assertXmlIsCorrect($file)

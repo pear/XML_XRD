@@ -5,11 +5,11 @@ class XML_XRD_Serializer_JSONTest extends PHPUnit_Framework_TestCase
 {
     public function testXrdRfc6415A()
     {
-        $fileNoExt = __DIR__ . '/../../../rfc6415-A';
+        $filePath = __DIR__ . '/../../../';
         $x = new XML_XRD();
-        $x->loadFile($fileNoExt . '.xrd');
+        $x->loadFile($filePath . 'xrd/rfc6415-A.xrd');
         $this->assertEquals(
-            json_decode(file_get_contents($fileNoExt . '.jrd')),
+            json_decode(file_get_contents($filePath . 'jrd/rfc6415-A.jrd')),
             json_decode($x->toJSON())
         );
     }

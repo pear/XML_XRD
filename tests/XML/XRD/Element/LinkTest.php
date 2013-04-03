@@ -9,7 +9,7 @@ class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->xrd = new XML_XRD();
-        $this->xrd->loadFile(__DIR__ . '/../../../xrd-1.0-b1.xrd');
+        $this->xrd->loadFile(__DIR__ . '/../../../xrd/xrd-1.0-b1.xrd');
         $this->link = $this->xrd->get('http://spec.example.net/photo/1.0');
         $this->assertInstanceOf('XML_XRD_Element_Link', $this->link);
     }
@@ -60,7 +60,7 @@ class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
 
     public function testPropertyTemplate()
     {
-        $this->xrd->loadFile(__DIR__ . '/../../../link-template.xrd');
+        $this->xrd->loadFile(__DIR__ . '/../../../xrd/link-template.xrd');
         $this->link = $this->xrd->get('title');
         $this->assertEquals('http://photos.example.com/{uri}.jpg', $this->link->template);
     }
@@ -104,7 +104,7 @@ class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
     public function testGetTitleLangNotFoundFallbackNoLang()
     {
         $xrd = new XML_XRD();
-        $xrd->loadFile(__DIR__ . '/../../../link-title.xrd');
+        $xrd->loadFile(__DIR__ . '/../../../xrd/link-title.xrd');
         $link = $xrd->get('name');
         $this->assertEquals(
             'Stevie', $link->getTitle('fr'),
@@ -116,7 +116,7 @@ class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
     public function testArrayAccess()
     {
         $xrd = new XML_XRD();
-        $xrd->loadFile(__DIR__ . '/../../../properties.xrd');
+        $xrd->loadFile(__DIR__ . '/../../../xrd/properties.xrd');
         $link = $xrd->get('link');
         $this->assertEquals('Stevie', $link['name']);
         $this->assertEquals('green', $link['color']);
