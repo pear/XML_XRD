@@ -1,0 +1,33 @@
+{
+    "subject" : "acct:bob@example.com",
+    "aliases" : [
+        "http://www.example.com/~bob/"
+    ],
+    "properties" : {
+        "http://example.com/ns/role/" : "employee"
+    },
+    "links" : [
+        {
+            "rel" : "http://webfinger.example/rel/avatar",
+            "type" : "image/jpeg",
+            "href" : "http://www.example.com/~bob/bob.jpg"
+        },
+        {
+            "rel" : "http://webfinger.example/rel/profile-page",
+            "href" : "http://www.example.com/~bob/"
+        },
+        {
+            "rel" : "http://webfinger.example/rel/blog",
+            "type" : "text/html",
+            "href" : "http://blogs.example.com/bob/",
+            "titles" : {
+                "en-us" : "The Magical World of Bob",
+                "fr" : "Le Monde Magique de Bob"
+            }
+        },
+        {
+            "rel" : "http://webfinger.example/rel/businesscard",
+            "href" : "https://www.example.com/~bob/bob.vcf"
+        }
+    ]
+}
