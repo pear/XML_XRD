@@ -39,6 +39,11 @@ class XML_XRD_LoadFileException extends Exception implements XML_XRD_Exception
      * Error loading the XML
      */
     const LOAD_XML = 12;
+
+    /**
+     * Unsupported XRD file/string type (no loader)
+     */
+    const NO_LOADER = 13;
 }
 
 ?>

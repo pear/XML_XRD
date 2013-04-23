@@ -11,6 +11,15 @@ class XML_XRDTest extends PHPUnit_Framework_TestCase
         $this->xrd = new XML_XRD();
     }
 
+    /**
+     * @expectedException XML_XRD_LoadFileException
+     * @expectedExceptionMessage No loader for XRD type "batty"
+     */
+    public function testLoadStringNoLoader()
+    {
+        @$this->xrd->loadString('foo', 'batty');
+    }
+
     public function testLoadString()
     {
         $xrdstring = <<<XRD

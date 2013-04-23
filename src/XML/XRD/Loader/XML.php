@@ -30,6 +30,11 @@ class XML_XRD_Loader_XML
      */
     protected $xrd;
 
+    /**
+     * XRD 1.0 namespace
+     */
+    const NS_XRD = 'http://docs.oasis-open.org/ns/xri/xrd-1.0';
+
 
 
     /**
@@ -40,6 +45,60 @@ class XML_XRD_Loader_XML
     public function __construct(XML_XRD $xrd)
     {
         $this->xrd = $xrd;
+    }
+
+    /**
+     * Loads the contents of the given file
+     *
+     * @param string $file Path to an XRD file
+     *
+     * @return void
+     *
+     * @throws XML_XRD_LoadFileException When the XML is invalid or cannot be
+     *                                   loaded
+     */
+    public function loadFile($file)
+    {
+        $old = libxml_use_internal_errors(true);
+        $x = simplexml_load_file($file);
+        libxml_use_internal_errors($old);
+        if ($x === false) {
+            throw new XML_XRD_LoadFileException(
+                'Error loading XML file: ' . libxml_get_last_error()->message,
+                XML_XRD_LoadFileException::LOAD_XML
+            );
+        }
+        return $this->load($x);
+    }
+
+    /**
+     * Loads the contents of the given string
+     *
+     * @param string $xml XML string
+     *
+     * @return void
+     *
+     * @throws XML_XRD_LoadFileException When the XML is invalid or cannot be
+     *                                   loaded
+     */
+    public function loadString($xml)
+    {
+        if ($xml == '') {
+            throw new XML_XRD_LoadFileException(
+                'Error loading XML string: string empty',
+                XML_XRD_LoadFileException::LOAD_XML
+            );
+        }
+        $old = libxml_use_internal_errors(true);
+        $x = simplexml_load_string($xml);
+        libxml_use_internal_errors($old);
+        if ($x === false) {
+            throw new XML_XRD_LoadFileException(
+                'Error loading XML string: ' . libxml_get_last_error()->message,
+                XML_XRD_LoadFileException::LOAD_XML
+            );
+        }
+        return $this->load($x);
     }
 
     /**
@@ -54,7 +113,7 @@ class XML_XRD_Loader_XML
     public function load(SimpleXMLElement $x)
     {
         $ns = $x->getDocNamespaces();
-        if ($ns[''] !== XML_XRD::NS_XRD) {
+        if ($ns[''] !== self::NS_XRD) {
             throw new XML_XRD_LoadFileException(
                 'Wrong document namespace', XML_XRD_LoadFileException::DOC_NS
             );

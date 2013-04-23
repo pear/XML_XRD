@@ -73,80 +73,62 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      */
     public $id;
 
-    /**
-     * XRD 1.0 namespace
-     */
-    const NS_XRD = 'http://docs.oasis-open.org/ns/xri/xrd-1.0';
-
 
 
     /**
      * Loads the contents of the given file
      *
      * @param string $file Path to an XRD file
+     * @param string $type File type: xml or json
      *
      * @return void
      *
-     * @throws XML_XRD_LoadFileException When the XML is invalid or cannot be
+     * @throws XML_XRD_LoadFileException When the file is invalid or cannot be
      *                                   loaded
      */
-    public function loadFile($file)
+    public function loadFile($file, $type = 'xml')
     {
-        $old = libxml_use_internal_errors(true);
-        $x = simplexml_load_file($file);
-        libxml_use_internal_errors($old);
-        if ($x === false) {
-            throw new XML_XRD_LoadFileException(
-                'Error loading XML file: ' . libxml_get_last_error()->message,
-                XML_XRD_LoadFileException::LOAD_XML
-            );
-        }
-        return $this->load($x);
+        $loader = $this->getLoader($type);
+        $loader->loadFile($file);
     }
 
     /**
      * Loads the contents of the given string
      *
-     * @param string $xml XML string
+     * @param string $str  XRD string
+     * @param string $type File type: xml or json
      *
      * @return void
      *
-     * @throws XML_XRD_LoadFileException When the XML is invalid or cannot be
+     * @throws XML_XRD_LoadFileException When the string is invalid or cannot be
      *                                   loaded
      */
-    public function loadString($xml)
+    public function loadString($str, $type = 'xml')
     {
-        if ($xml == '') {
-            throw new XML_XRD_LoadFileException(
-                'Error loading XML string: string empty',
-                XML_XRD_LoadFileException::LOAD_XML
-            );
-        }
-        $old = libxml_use_internal_errors(true);
-        $x = simplexml_load_string($xml);
-        libxml_use_internal_errors($old);
-        if ($x === false) {
-            throw new XML_XRD_LoadFileException(
-                'Error loading XML string: ' . libxml_get_last_error()->message,
-                XML_XRD_LoadFileException::LOAD_XML
-            );
-        }
-        return $this->load($x);
+        $loader = $this->getLoader($type);
+        $loader->loadString($str);
     }
 
     /**
-     * Loads the XML element into the classes' data structures
+     * Creates a XRD loader object for the given type
      *
-     * @param object $x XML element containing the whole XRD document
+     * @param string $type File type: xml or json
      *
-     * @return void
-     *
-     * @throws XML_XRD_LoadFileException When the XML is invalid
+     * @return XML_XRD_Loader
      */
-    protected function load(SimpleXMLElement $x)
+    protected function getLoader($type)
     {
-        $loader = new XML_XRD_Loader_XML($this);
-        $loader->load($x);
+        $class = 'XML_XRD_Loader_' . strtoupper($type);
+        $file = str_replace('_', '/', $class) . '.php';
+        include_once $file;
+        if (class_exists($class)) {
+            return new $class($this);
+        }
+
+        throw new XML_XRD_LoadFileException(
+            'No loader for XRD type "' . $type . '"',
+            XML_XRD_LoadFileException::NO_LOADER
+        );
     }
 
     /**
