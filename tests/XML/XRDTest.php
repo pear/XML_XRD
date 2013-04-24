@@ -30,14 +30,13 @@ class XML_XRDTest extends PHPUnit_Framework_TestCase
   </Link>
 </XRD>
 XRD;
-        $this->assertNull(
-            $this->xrd->loadString($xrdstring)
-        );
+        $this->assertNull($this->xrd->loadString($xrdstring));
+        $this->assertEquals('http://example.com/gpburdell', $this->xrd->subject);
     }
 
     /**
      * @expectedException XML_XRD_LoadFileException
-     * @expectedExceptionMessage Error loading XML string: string empty
+     * @expectedExceptionMessage Detecting file type failed
      */
     public function testLoadStringFailEmpty()
     {
@@ -48,9 +47,18 @@ XRD;
      * @expectedException XML_XRD_LoadFileException
      * @expectedExceptionMessage Error loading XML string: Start tag expected
      */
-    public function testLoadStringFailBroken()
+    public function testLoadStringFailBrokenXml()
     {
         $this->xrd->loadString("<?xml");
+    }
+
+    /**
+     * @expectedException XML_XRD_LoadFileException
+     * @expectedExceptionMessage Error loading JRD: JSON_ERROR_SYNTAX
+     */
+    public function testLoadStringFailBrokenJson()
+    {
+        $this->xrd->loadString("{foo");
     }
 
     /**
@@ -92,7 +100,7 @@ XRD;
 
     /**
      * @expectedException XML_XRD_LoadFileException
-     * @expectedExceptionMessage Error loading XML file: failed to load external entity
+     * @expectedExceptionMessage Error loading XRD file: File does not exist
      */
     public function testLoadFileNonExisting()
     {

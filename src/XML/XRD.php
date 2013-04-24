@@ -76,18 +76,24 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
 
 
     /**
-     * Loads the contents of the given file
+     * Loads the contents of the given file.
+     *
+     * Note: Only use file type auto-detection for local files.
+     * Do not use it on remote files as the file gets requested several times.
      *
      * @param string $file Path to an XRD file
-     * @param string $type File type: xml or json
+     * @param string $type File type: xml or json, NULL for auto-detection
      *
      * @return void
      *
      * @throws XML_XRD_LoadFileException When the file is invalid or cannot be
      *                                   loaded
      */
-    public function loadFile($file, $type = 'xml')
+    public function loadFile($file, $type = null)
     {
+        if ($type === null) {
+            $type = $this->detectTypeFromFile($file);
+        }
         $loader = $this->getLoader($type);
         $loader->loadFile($file);
     }
@@ -96,15 +102,18 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      * Loads the contents of the given string
      *
      * @param string $str  XRD string
-     * @param string $type File type: xml or json
+     * @param string $type File type: xml or json, NULL for auto-detection
      *
      * @return void
      *
      * @throws XML_XRD_LoadFileException When the string is invalid or cannot be
      *                                   loaded
      */
-    public function loadString($str, $type = 'xml')
+    public function loadString($str, $type = null)
     {
+        if ($type === null) {
+            $type = $this->detectTypeFromString($str);
+        }
         $loader = $this->getLoader($type);
         $loader->loadString($str);
     }
@@ -128,6 +137,59 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
         throw new XML_XRD_LoadFileException(
             'No loader for XRD type "' . $type . '"',
             XML_XRD_LoadFileException::NO_LOADER
+        );
+    }
+
+    /**
+     * Tries to detect the file type (xml or json) from the file content
+     *
+     * @param string $file File name to check
+     *
+     * @return string File type ('xml' or 'json')
+     *
+     * @throws XML_XRD_LoadFileException When opening the file fails.
+     */
+    protected function detectTypeFromFile($file)
+    {
+        if (!file_exists($file)) {
+            throw new XML_XRD_LoadFileException(
+                'Error loading XRD file: File does not exist',
+                XML_XRD_LoadFileException::OPEN_FILE
+            );
+        }
+        $handle = fopen($file, 'r');
+        if (!$handle) {
+            throw new XML_XRD_LoadFileException(
+                'Cannot open file to determine type',
+                XML_XRD_LoadFileException::OPEN_FILE
+            );
+        }
+
+        $str = (string)fgets($handle, 10);
+        fclose($handle);
+        return $this->detectTypeFromString($str);
+    }
+
+    /**
+     * Tries to detect the file type from the content of the file
+     *
+     * @param string $str Content of XRD file
+     *
+     * @return string File type ('xml' or 'json')
+     *
+     * @throws XML_XRD_LoadFileException When the type cannot be detected
+     */
+    protected function detectTypeFromString($str)
+    {
+        if (substr($str, 0, 1) == '{') {
+            return 'json';
+        } else if (substr($str, 0, 5) == '<?xml') {
+            return 'xml';
+        }
+
+        throw new XML_XRD_LoadFileException(
+            'Detecting file type failed',
+            XML_XRD_LoadFileException::DETECT_TYPE
         );
     }
 

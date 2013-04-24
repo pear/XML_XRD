@@ -65,7 +65,7 @@ class XML_XRD_Loader_XML
         if ($x === false) {
             throw new XML_XRD_LoadFileException(
                 'Error loading XML file: ' . libxml_get_last_error()->message,
-                XML_XRD_LoadFileException::LOAD_XML
+                XML_XRD_LoadFileException::LOAD
             );
         }
         return $this->load($x);
@@ -86,7 +86,7 @@ class XML_XRD_Loader_XML
         if ($xml == '') {
             throw new XML_XRD_LoadFileException(
                 'Error loading XML string: string empty',
-                XML_XRD_LoadFileException::LOAD_XML
+                XML_XRD_LoadFileException::LOAD
             );
         }
         $old = libxml_use_internal_errors(true);
@@ -95,7 +95,7 @@ class XML_XRD_Loader_XML
         if ($x === false) {
             throw new XML_XRD_LoadFileException(
                 'Error loading XML string: ' . libxml_get_last_error()->message,
-                XML_XRD_LoadFileException::LOAD_XML
+                XML_XRD_LoadFileException::LOAD
             );
         }
         return $this->load($x);

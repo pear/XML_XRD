@@ -10,14 +10,20 @@ class XML_XRD_Loader_JSONTest extends PHPUnit_Framework_TestCase
         $this->jl = new XML_XRD_Loader_JSON($this->xrd);
     }
 
+    /**
+     * @expectedException XML_XRD_LoadFileException
+     * @expectedExceptionMessage Error loading JRD: string empty
+     */
+    public function testLoadStringEmpty()
+    {
+        $this->jl = new XML_XRD_Loader_JSON(new XML_XRD());
+        $this->jl->loadString('');
+    }
+
     public function testLoadSubject()
     {
-        $this->jl->load(
-            json_decode(
-                file_get_contents(
-                    __DIR__ . '/../../../jrd/acct:bob@example.com.jrd'
-                )
-            )
+        $this->jl->loadFile(
+            __DIR__ . '/../../../jrd/acct:bob@example.com.jrd'
         );
         $this->assertEquals('acct:bob@example.com', $this->xrd->subject);
         $this->assertTrue($this->xrd->describes('acct:bob@example.com'));
@@ -25,36 +31,24 @@ class XML_XRD_Loader_JSONTest extends PHPUnit_Framework_TestCase
 
     public function testLoadExpiresNotSet()
     {
-        $this->jl->load(
-            json_decode(
-                file_get_contents(
-                    __DIR__ . '/../../../jrd/acct:bob@example.com.jrd'
-                )
-            )
+        $this->jl->loadFile(
+            __DIR__ . '/../../../jrd/acct:bob@example.com.jrd'
         );
         $this->assertNull($this->xrd->expires);
     }
 
     public function testLoadExpires()
     {
-        $this->jl->load(
-            json_decode(
-                file_get_contents(
-                    __DIR__ . '/../../../jrd/rfc6415-A.jrd'
-                )
-            )
+        $this->jl->loadFile(
+            __DIR__ . '/../../../jrd/rfc6415-A.jrd'
         );
         $this->assertEquals(1264843800, $this->xrd->expires);
     }
 
     public function testLoadAliases()
     {
-        $this->jl->load(
-            json_decode(
-                file_get_contents(
-                    __DIR__ . '/../../../jrd/acct:bob@example.com.jrd'
-                )
-            )
+        $this->jl->loadFile(
+            __DIR__ . '/../../../jrd/acct:bob@example.com.jrd'
         );
         $this->assertContains(
             'http://www.example.com/~bob/', $this->xrd->aliases
@@ -64,12 +58,8 @@ class XML_XRD_Loader_JSONTest extends PHPUnit_Framework_TestCase
 
     public function testLoadProperties()
     {
-        $this->jl->load(
-            json_decode(
-                file_get_contents(
-                    __DIR__ . '/../../../jrd/acct:bob@example.com.jrd'
-                )
-            )
+        $this->jl->loadFile(
+            __DIR__ . '/../../../jrd/acct:bob@example.com.jrd'
         );
         $this->assertTrue(isset($this->xrd['http://example.com/ns/role/']));
         $this->assertEquals('employee', $this->xrd['http://example.com/ns/role/']);
@@ -77,12 +67,8 @@ class XML_XRD_Loader_JSONTest extends PHPUnit_Framework_TestCase
 
     public function testLoadLinks()
     {
-        $this->jl->load(
-            json_decode(
-                file_get_contents(
-                    __DIR__ . '/../../../jrd/acct:bob@example.com.jrd'
-                )
-            )
+        $this->jl->loadFile(
+            __DIR__ . '/../../../jrd/acct:bob@example.com.jrd'
         );
 
         $link = $this->xrd->get('http://webfinger.example/rel/blog');
@@ -95,12 +81,8 @@ class XML_XRD_Loader_JSONTest extends PHPUnit_Framework_TestCase
 
     public function testLoadLinkProperties()
     {
-        $this->jl->load(
-            json_decode(
-                file_get_contents(
-                    __DIR__ . '/../../../jrd/mailto:sue@example.com.jrd'
-                )
-            )
+        $this->jl->loadFile(
+            __DIR__ . '/../../../jrd/mailto:sue@example.com.jrd'
         );
 
         $link = $this->xrd->get('http://webfinger.example/rel/smtp-server');

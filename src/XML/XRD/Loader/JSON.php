@@ -43,6 +43,59 @@ class XML_XRD_Loader_JSON
     }
 
     /**
+     * Loads the contents of the given file
+     *
+     * @param string $file Path to an JRD file
+     *
+     * @return void
+     *
+     * @throws XML_XRD_LoadFileException When the JSON is invalid or cannot be
+     *                                   loaded
+     */
+    public function loadFile($file)
+    {
+        $json = file_get_contents($file);
+        return $this->loadString($json);
+    }
+
+    /**
+     * Loads the contents of the given string
+     *
+     * @param string $json JSON string
+     *
+     * @return void
+     *
+     * @throws XML_XRD_LoadFileException When the JSON is invalid or cannot be
+     *                                   loaded
+     */
+    public function loadString($json)
+    {
+        if ($json == '') {
+            throw new XML_XRD_LoadFileException(
+                'Error loading JRD: string empty',
+                XML_XRD_LoadFileException::LOAD
+            );
+        }
+
+        $obj = json_decode($json);
+        if ($obj !== null) {
+            return $this->load($obj);
+        }
+
+        $constants = get_defined_constants(true);
+        $json_errors = array();
+        foreach ($constants['json'] as $name => $value) {
+            if (!strncmp($name, 'JSON_ERROR_', 11)) {
+                $json_errors[$value] = $name;
+            }
+        }
+        throw new XML_XRD_LoadFileException(
+            'Error loading JRD: ' . $json_errors[json_last_error()],
+            XML_XRD_LoadFileException::LOAD
+        );
+    }
+
+    /**
      * Loads the JSON object into the classes' data structures
      *
      * @param object $j JSON object containing the whole JSON document
