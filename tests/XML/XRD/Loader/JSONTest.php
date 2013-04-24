@@ -12,6 +12,16 @@ class XML_XRD_Loader_JSONTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException XML_XRD_LoadFileException
+     * @expectedExceptionMessage Error loading JRD file
+     */
+    public function testLoadFileDoesNotExist()
+    {
+        $this->jl = new XML_XRD_Loader_JSON(new XML_XRD());
+        @$this->jl->loadFile(__DIR__ . '/doesnotexist');
+    }
+
+    /**
+     * @expectedException XML_XRD_LoadFileException
      * @expectedExceptionMessage Error loading JRD: string empty
      */
     public function testLoadStringEmpty()

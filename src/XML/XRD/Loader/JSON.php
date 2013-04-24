@@ -55,6 +55,12 @@ class XML_XRD_Loader_JSON
     public function loadFile($file)
     {
         $json = file_get_contents($file);
+        if ($json === false) {
+            throw new XML_XRD_LoadFileException(
+                'Error loading JRD file: ' . $file,
+                XML_XRD_LoadFileException::LOAD
+            );
+        }
         return $this->loadString($json);
     }
 
