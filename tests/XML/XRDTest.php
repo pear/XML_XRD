@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ALL|E_STRICT);
 require_once 'XML/XRD.php';
 
 class XML_XRDTest extends PHPUnit_Framework_TestCase
