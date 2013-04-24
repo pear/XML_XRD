@@ -35,7 +35,7 @@ class XML_XRD_Loader_JSON
     /**
      * Init object with xrd object
      *
-     * @param XML_XRD $xrd Data storage the XML data get loaded into
+     * @param XML_XRD $xrd Data storage the JSON data get loaded into
      */
     public function __construct(XML_XRD $xrd)
     {
