@@ -4,10 +4,20 @@ require_once 'XML/XRD.php';
 class XML_XRDTest extends PHPUnit_Framework_TestCase
 {
     public $xrd;
+    protected $cleanupList = array();
 
     public function setUp()
     {
         $this->xrd = new XML_XRD();
+    }
+
+    public function tearDown()
+    {
+        foreach ($this->cleanupList as $k => $file) {
+            chmod($file, '0700');
+            unlink($file);
+            unset($this->cleanupList[$k]);
+        }
     }
 
     /**
@@ -105,6 +115,18 @@ XRD;
     public function testLoadFileNonExisting()
     {
         $this->xrd->loadFile(__DIR__ . '/../doesnotexist');
+    }
+
+    /**
+     * @expectedException XML_XRD_LoadFileException
+     * @expectedExceptionMessage Cannot open file to determine type
+     */
+    public function testDetectTypeFromFileCannotOpen()
+    {
+        $file = tempnam(sys_get_temp_dir(), 'xml_xrd-unittests');
+        $this->cleanupList[] = $file;
+        chmod($file, '0000');
+        @$this->xrd->loadFile($file);
     }
 
     public function testDescribesNoAlias()
