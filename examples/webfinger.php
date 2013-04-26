@@ -15,7 +15,7 @@ require_once 'XML/XRD.php';
 $xrd = new XML_XRD();
 try {
     $xrd->loadFile(
-        'http://' . $host . '/.well-known/webfinger?resource=acct:' . $email,
+        'https://' . $host . '/.well-known/webfinger?resource=acct:' . $email,
         'json'
     );
 } catch (XML_XRD_Exception $e) {
