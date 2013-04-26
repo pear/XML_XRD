@@ -10,18 +10,13 @@
 >
  <name>XML_XRD</name>
  <channel>pear.php.net</channel>
- <summary>PHP library to parse and generate "Extensible Resource Descriptor" (XRD) files</summary>
+ <summary>PHP library to parse and generate "Extensible Resource Descriptor" (XRD + JRD) files</summary>
  <description>
 PHP library to parse and generate "Extensible Resource Descriptor (XRD) Version 1.0" files.
 
-XRD files are used for ".well-known/host-meta" files as standardized in
+XRD and JRD files are used for ".well-known/host-meta" files as standardized in
 "RFC 6415: Web Host Metadata", as well as in the 
 "LRDD (Link-based Resource Descriptor Discovery)" files linked from it.
-
-The LRDD XRD files can be used to discover information about users by just their
-e-mail address, e.g. the OpenID provider.
-This is the foundation of Webfinger, which lets people use their e-mail address
-to do OpenID sign in.
 
 The XRD format supercedes the XRDS format defined in XRI 2.0, which is used in
 the Yadis communications protocol.
@@ -34,11 +29,11 @@ the Yadis communications protocol.
   <active>yes</active>
  </lead>
 
- <date>2012-02-15</date>
+ <date>2013-04-26</date>
 
  <version>
-  <release>0.2.2</release>
-  <api>0.2.2</api>
+  <release>0.3.0</release>
+  <api>0.3.0</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -47,7 +42,8 @@ the Yadis communications protocol.
  <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL</license>
 
  <notes>
-  All exceptions are catchable with XML_XRD_Exception now
+- Full JRD loading and saving support
+- BC break: toXML() deprecated.
  </notes>
 
  <contents>
@@ -57,44 +53,67 @@ the Yadis communications protocol.
      <file name="XRD.php"             role="php" install-as="XML/XRD.php" />
      <dir name="XRD">
       <file name="Exception.php"      role="php" install-as="XML/XRD/Exception.php" />
-      <file name="LoadFileException.php" role="php" install-as="XML/XRD/LoadFileException.php" />
+      <file name="Loader.php"         role="php" install-as="XML/XRD/Loader.php" />
       <file name="LogicException.php" role="php" install-as="XML/XRD/LogicException.php" />
       <file name="PropertyAccess.php" role="php" install-as="XML/XRD/PropertyAccess.php" />
+      <file name="Serializer.php"     role="php" install-as="XML/XRD/Serializer.php" />
       <dir name="Element">
        <file name="Link.php"          role="php" install-as="XML/XRD/Element/Link.php" />
        <file name="Property.php"      role="php" install-as="XML/XRD/Element/Property.php" />
       </dir>
+      <dir name="Loader">
+       <file name="Exception.php"     role="php" install-as="XML/XRD/Loader/Exception.php" />
+       <file name="JSON.php"          role="php" install-as="XML/XRD/Loader/JSON.php" />
+       <file name="XML.php"           role="php" install-as="XML/XRD/Loader/XML.php" />
+      </dir>
       <dir name="Serializer">
+       <file name="Exception.php"     role="php" install-as="XML/XRD/Serializer/Exception.php" />
        <file name="JSON.php"          role="php" install-as="XML/XRD/Serializer/JSON.php" />
        <file name="XML.php"           role="php" install-as="XML/XRD/Serializer/XML.php" />
       </dir>
      </dir>
     </dir>
    </dir><!-- /src -->
+
    <dir name="examples">
+    <file name="convert-xrdjrd.php"   role="doc" />
     <file name="gen-lrdd.php"         role="doc" />
     <file name="gen-host-meta.php"    role="doc" />
     <file name="webfinger.php"        role="doc" />
    </dir><!-- /examples -->
+
    <dir name="tests">
     <file name="AllTests.php"         role="test" />
-    <file name="expires.xrd"          role="test" />
-    <file name="link-template.xrd"    role="test" />
-    <file name="link-title.xrd"       role="test" />
-    <file name="multilinks.xrd"       role="test" />
     <file name="phpunit.xml"          role="test" />
-    <file name="properties.xrd"       role="test" />
-    <file name="rfc6415-A.jrd"        role="test" />
-    <file name="rfc6415-A.xrd"        role="test" />
-    <file name="xrd-1.0-b1.xrd"       role="test" />
-    <file name="xrd-1.0-b2.xrd"       role="test" />
-    <file name="xrd-1.0-b2-nosig.xrd" role="test" />
+    <dir name="jrd">
+     <file name="acct:bob@example.com.jrd"   role="test" />
+     <file name="mailto:sue@example.com.jrd" role="test" />
+     <file name="rfc6415-A.jrd"        role="test" />
+    </dir>
+    <dir name="xrd">
+     <file name="expires.xrd"          role="test" />
+     <file name="link-template.xrd"    role="test" />
+     <file name="link-title.xrd"       role="test" />
+     <file name="multilinks.xrd"       role="test" />
+     <file name="properties.xrd"       role="test" />
+     <file name="rfc6415-A.xrd"        role="test" />
+     <file name="xrd-1.0-b1.xrd"       role="test" />
+     <file name="xrd-1.0-b2.xrd"       role="test" />
+     <file name="xrd-1.0-b2-nosig.xrd" role="test" />
+    </dir>
     <dir name="XML">
      <file name="XRDTest.php"         role="test" />
      <dir name="XRD">
+      <file name="LoaderTest.php"     role="test" />
+      <file name="PropertyAccessTest.php" role="test" />
+      <file name="SerializerTest.php" role="test" />
       <dir name="Element">
-       <file name="PropertyTest.php"  role="test" />
        <file name="LinkTest.php"      role="test" />
+       <file name="PropertyTest.php"  role="test" />
+      </dir>
+      <dir name="Loader">
+       <file name="JSONTest.php"      role="test" />
+       <file name="XMLTest.php"       role="test" />
       </dir>
       <dir name="Serializer">
        <file name="JSONTest.php"      role="test" />
@@ -119,6 +138,23 @@ the Yadis communications protocol.
 
  <phprelease />
  <changelog>
+
+  <release>
+   <version>
+    <release>0.3.0</release>
+    <api>0.3.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2013-04-26</date>
+   <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL</license>
+   <notes>
+    - Full JRD loading and saving support
+    - BC break: toXML() deprecated.
+   </notes>
+  </release>
 
   <release>
    <version>
