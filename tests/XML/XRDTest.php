@@ -1,27 +1,20 @@
 <?php
 require_once 'XML/XRD.php';
 
+/**
+ * @covers XML_XRD
+ */
 class XML_XRDTest extends PHPUnit_Framework_TestCase
 {
     public $xrd;
-    protected $cleanupList = array();
 
     public function setUp()
     {
         $this->xrd = new XML_XRD();
     }
 
-    public function tearDown()
-    {
-        foreach ($this->cleanupList as $k => $file) {
-            chmod($file, '0700');
-            unlink($file);
-            unset($this->cleanupList[$k]);
-        }
-    }
-
     /**
-     * @expectedException XML_XRD_LoadFileException
+     * @expectedException XML_XRD_Loader_Exception
      * @expectedExceptionMessage No loader for XRD type "batty"
      */
     public function testLoadStringNoLoader()
@@ -45,7 +38,7 @@ XRD;
     }
 
     /**
-     * @expectedException XML_XRD_LoadFileException
+     * @expectedException XML_XRD_Loader_Exception
      * @expectedExceptionMessage Detecting file type failed
      */
     public function testLoadStringFailEmpty()
@@ -53,80 +46,11 @@ XRD;
         $this->xrd->loadString("");
     }
 
-    /**
-     * @expectedException XML_XRD_LoadFileException
-     * @expectedExceptionMessage Error loading XML string: Start tag expected
-     */
-    public function testLoadStringFailBrokenXml()
-    {
-        $this->xrd->loadString("<?xml");
-    }
-
-    /**
-     * @expectedException XML_XRD_LoadFileException
-     * @expectedExceptionMessage Error loading JRD: JSON_ERROR_SYNTAX
-     */
-    public function testLoadStringFailBrokenJson()
-    {
-        $this->xrd->loadString("{foo");
-    }
-
-    /**
-     * @expectedException XML_XRD_LoadFileException
-     * @expectedExceptionMessage Wrong document namespace
-     */
-    public function testLoadXmlWrongNamespace()
-    {
-        $xrdstring = <<<XRD
-<?xml version="1.0"?>
-<XRD xmlns="http://this/is/wrong">
-  <Subject>http://example.com/gpburdell</Subject>
-</XRD>
-XRD;
-        $this->xrd->loadString($xrdstring);
-    }
-
-    /**
-     * @expectedException XML_XRD_LoadFileException
-     * @expectedExceptionMessage XML root element is not "XRD"
-     */
-    public function testLoadXmlWrongRootElement()
-    {
-        $xrdstring = <<<XRD
-<?xml version="1.0"?>
-<FOO xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">
-  <Subject>http://example.com/gpburdell</Subject>
-</FOO>
-XRD;
-        $this->xrd->loadString($xrdstring);
-    }
-
     public function testLoadFile()
     {
         $this->assertNull(
             $this->xrd->loadFile(__DIR__ . '/../xrd/xrd-1.0-b1.xrd')
         );
-    }
-
-    /**
-     * @expectedException XML_XRD_LoadFileException
-     * @expectedExceptionMessage Error loading XRD file: File does not exist
-     */
-    public function testLoadFileNonExisting()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../doesnotexist');
-    }
-
-    /**
-     * @expectedException XML_XRD_LoadFileException
-     * @expectedExceptionMessage Cannot open file to determine type
-     */
-    public function testDetectTypeFromFileCannotOpen()
-    {
-        $file = tempnam(sys_get_temp_dir(), 'xml_xrd-unittests');
-        $this->cleanupList[] = $file;
-        chmod($file, '0000');
-        @$this->xrd->loadFile($file);
     }
 
     public function testDescribesNoAlias()
@@ -286,136 +210,22 @@ XRD;
         $this->assertEquals('http://example.com/cv.html', $links[0]->href);
     }
 
-    public function testArrayAccess()
+    public function testTo()
     {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/properties.xrd');
-        $this->assertTrue(isset($this->xrd['name']));
-        $this->assertEquals('Stevie', $this->xrd['name']);
-        $this->assertEquals('green', $this->xrd['color']);
-        $this->assertNull($this->xrd['empty']);
-        $this->assertNull($this->xrd['doesnotexist']);
+        $this->xrd->subject = 'foo@example.org';
+        $json = $this->xrd->to('json');
+        $this->assertInternalType('string', $json);
+        $this->assertContains('foo@example.org', $json);
     }
 
-    public function testArrayAccessNull()
+    public function testToXml()
     {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/properties.xrd');
-        $this->assertNull($this->xrd['empty']);
-        $this->assertNull($this->xrd['doesnotexist']);
+        $this->xrd->subject = 'foo@example.org';
+        $xml = $this->xrd->toXML();
+        $this->assertInternalType('string', $xml);
+        $this->assertContains('<Subject>foo@example.org</Subject>', $xml);
     }
 
-    public function testArrayAccessDoesNotExist()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/properties.xrd');
-        $this->assertFalse(isset($this->xrd['doesnotexist']));
-        $this->assertNull($this->xrd['doesnotexist']);
-    }
-
-    /**
-     * @expectedException XML_XRD_LogicException
-     */
-    public function testArrayAccessSet()
-    {
-        $this->xrd['foo'] = 'bar';
-    }
-
-    /**
-     * @expectedException XML_XRD_LogicException
-     */
-    public function testArrayAccessUnset()
-    {
-        unset($this->xrd['foo']);
-    }
-
-    public function testGetPropertiesAll()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/properties.xrd');
-        $props = array();
-        foreach ($this->xrd->getProperties() as $property) {
-            $this->assertInstanceOf('XML_XRD_Element_Property', $property);
-            $props[] = $property;
-        }
-        $this->assertEquals(6, count($props));
-        
-        $this->assertEquals('name', $props[0]->type);
-        $this->assertEquals('Stevie', $props[0]->value);
-        
-        $this->assertEquals('color', $props[2]->type);
-        $this->assertEquals('orange', $props[2]->value);
-    }
-
-    public function testGetPropertiesType()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/properties.xrd');
-        $props = array();
-        foreach ($this->xrd->getProperties('color') as $property) {
-            $this->assertInstanceOf('XML_XRD_Element_Property', $property);
-            $props[] = $property;
-        }
-        $this->assertEquals(2, count($props));
-        
-        $this->assertEquals('color', $props[0]->type);
-        $this->assertEquals('green', $props[0]->value);
-
-        $this->assertEquals('color', $props[1]->type);
-        $this->assertEquals('orange', $props[1]->value);
-    }
-
-    public function testPropertyExpiresNone()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/properties.xrd');
-        $this->assertNull($this->xrd->expires);
-    }
-
-    public function testPropertyExpiresTimestampZero()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/xrd-1.0-b1.xrd');
-        $this->assertEquals(0, $this->xrd->expires);
-    }
-
-    public function testPropertyExpiresTimestamp()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/expires.xrd');
-        $this->assertEquals(123456, $this->xrd->expires);
-    }
-
-    public function testPropertySubjectNone()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/expires.xrd');
-        $this->assertNull($this->xrd->subject);
-    }
-
-    public function testPropertySubject()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/xrd-1.0-b1.xrd');
-        $this->assertEquals('http://example.com/gpburdell', $this->xrd->subject);
-    }
-
-    public function testPropertyAliasNone()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/xrd-1.0-b1.xrd');
-        $this->assertEquals(array(), $this->xrd->aliases);
-    }
-
-    public function testPropertyAlias()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/xrd-1.0-b2.xrd');
-        $this->assertInternalType('array', $this->xrd->aliases);
-        $this->assertEquals(2, count($this->xrd->aliases));
-        $this->assertEquals('http://people.example.com/gpburdell', $this->xrd->aliases[0]);
-        $this->assertEquals('acct:gpburdell@example.com', $this->xrd->aliases[1]);
-    }
-
-    public function testPropertyIdNone()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/expires.xrd');
-        $this->assertNull($this->xrd->id);
-    }
-
-    public function testPropertyId()
-    {
-        $this->xrd->loadFile(__DIR__ . '/../xrd/xrd-1.0-b2.xrd');
-        $this->assertEquals('foo', $this->xrd->id);
-    }
 }
 
 ?>

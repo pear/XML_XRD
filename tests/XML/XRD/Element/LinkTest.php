@@ -1,6 +1,9 @@
 <?php
 require_once 'XML/XRD.php';
 
+/**
+ * @covers XML_XRD_Element_Link
+ */
 class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
 {
     public $xrd;

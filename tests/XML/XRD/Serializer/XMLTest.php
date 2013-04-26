@@ -1,6 +1,9 @@
 <?php
 require_once 'XML/XRD.php';
 
+/**
+ * @covers XML_XRD_Serializer_XML
+ */
 class XML_XRD_Serializer_XMLTest extends PHPUnit_Framework_TestCase
 {
     public function testXrd10B1()
@@ -28,7 +31,7 @@ class XML_XRD_Serializer_XMLTest extends PHPUnit_Framework_TestCase
         $xrd = new XML_XRD();
         $xrd->loadFile($file);
         $this->assertXmlStringEqualsXmlFile(
-            $file, $xrd->toXML(),
+            $file, $xrd->to('xml'),
             'Generated XML does not match the expected XML for ' . $file
         );
     }

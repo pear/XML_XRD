@@ -23,7 +23,7 @@ require_once 'XML/XRD/Exception.php';
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD_LoadFileException extends Exception implements XML_XRD_Exception
+class XML_XRD_Loader_Exception extends Exception implements XML_XRD_Exception
 {
     /**
      * The document namespace is not the XRD 1.0 namespace

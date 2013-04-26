@@ -129,6 +129,5 @@ abstract class XML_XRD_PropertyAccess implements ArrayAccess
         }
         return $properties;
     }
-
 }
 ?>

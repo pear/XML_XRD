@@ -13,8 +13,8 @@
 
 require_once 'XML/XRD/PropertyAccess.php';
 require_once 'XML/XRD/Element/Link.php';
-require_once 'XML/XRD/LoadFileException.php';
-require_once 'XML/XRD/Loader/XML.php';
+require_once 'XML/XRD/Loader.php';
+require_once 'XML/XRD/Serializer.php';
 
 /**
  * Main class used to load XRD documents from string or file.
@@ -37,6 +37,20 @@ require_once 'XML/XRD/Loader/XML.php';
  */
 class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
 {
+    /**
+     * XRD file/string loading dispatcher
+     *
+     * @var XML_XRD_Loader
+     */
+    public $loader;
+
+    /**
+     * XRD serializing dispatcher
+     *
+     * @var XML_XRD_Serializer
+     */
+    public $serializer;
+
     /**
      * XRD subject
      *
@@ -86,16 +100,15 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      *
      * @return void
      *
-     * @throws XML_XRD_LoadFileException When the file is invalid or cannot be
+     * @throws XML_XRD_Loader_Exception When the file is invalid or cannot be
      *                                   loaded
      */
     public function loadFile($file, $type = null)
     {
-        if ($type === null) {
-            $type = $this->detectTypeFromFile($file);
+        if (!isset($this->loader)) {
+            $this->loader = new XML_XRD_Loader($this);
         }
-        $loader = $this->getLoader($type);
-        $loader->loadFile($file);
+        return $this->loader->loadFile($file, $type);
     }
 
     /**
@@ -106,91 +119,15 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      *
      * @return void
      *
-     * @throws XML_XRD_LoadFileException When the string is invalid or cannot be
+     * @throws XML_XRD_Loader_Exception When the string is invalid or cannot be
      *                                   loaded
      */
     public function loadString($str, $type = null)
     {
-        if ($type === null) {
-            $type = $this->detectTypeFromString($str);
+        if (!isset($this->loader)) {
+            $this->loader = new XML_XRD_Loader($this);
         }
-        $loader = $this->getLoader($type);
-        $loader->loadString($str);
-    }
-
-    /**
-     * Creates a XRD loader object for the given type
-     *
-     * @param string $type File type: xml or json
-     *
-     * @return XML_XRD_Loader
-     */
-    protected function getLoader($type)
-    {
-        $class = 'XML_XRD_Loader_' . strtoupper($type);
-        $file = str_replace('_', '/', $class) . '.php';
-        include_once $file;
-        if (class_exists($class)) {
-            return new $class($this);
-        }
-
-        throw new XML_XRD_LoadFileException(
-            'No loader for XRD type "' . $type . '"',
-            XML_XRD_LoadFileException::NO_LOADER
-        );
-    }
-
-    /**
-     * Tries to detect the file type (xml or json) from the file content
-     *
-     * @param string $file File name to check
-     *
-     * @return string File type ('xml' or 'json')
-     *
-     * @throws XML_XRD_LoadFileException When opening the file fails.
-     */
-    protected function detectTypeFromFile($file)
-    {
-        if (!file_exists($file)) {
-            throw new XML_XRD_LoadFileException(
-                'Error loading XRD file: File does not exist',
-                XML_XRD_LoadFileException::OPEN_FILE
-            );
-        }
-        $handle = fopen($file, 'r');
-        if (!$handle) {
-            throw new XML_XRD_LoadFileException(
-                'Cannot open file to determine type',
-                XML_XRD_LoadFileException::OPEN_FILE
-            );
-        }
-
-        $str = (string)fgets($handle, 10);
-        fclose($handle);
-        return $this->detectTypeFromString($str);
-    }
-
-    /**
-     * Tries to detect the file type from the content of the file
-     *
-     * @param string $str Content of XRD file
-     *
-     * @return string File type ('xml' or 'json')
-     *
-     * @throws XML_XRD_LoadFileException When the type cannot be detected
-     */
-    protected function detectTypeFromString($str)
-    {
-        if (substr($str, 0, 1) == '{') {
-            return 'json';
-        } else if (substr($str, 0, 5) == '<?xml') {
-            return 'xml';
-        }
-
-        throw new XML_XRD_LoadFileException(
-            'Detecting file type failed',
-            XML_XRD_LoadFileException::DETECT_TYPE
-        );
+        return $this->loader->loadString($str, $type);
     }
 
     /**
@@ -292,28 +229,30 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
     }
 
     /**
-     * Converts this XRD object to XML.
+     * Converts this XRD object to XML or JSON.
      *
-     * @return string Generated XML
+     * @param string $type Serialization type: xml or json
+     *
+     * @return string Generated content
      */
-    public function toXML()
+    public function to($type)
     {
-        include_once 'XML/XRD/Serializer/XML.php';
-        $s = new XML_XRD_Serializer_XML($this);
-        return (string)$s;
+        if (!isset($this->serializer)) {
+            $this->serializer = new XML_XRD_Serializer($this);
+        }
+        return $this->serializer->to($type);
     }
 
     /**
-     * Converts this XRD object to JSON (for JRD files, "host-meta.json").
+     * Converts this XRD object to XML.
      *
-     * @return string Generated JSON string
+     * @return string Generated XML
+     *
+     * @deprecated use to('xml')
      */
-    public function toJSON()
+    public function toXML()
     {
-        include_once 'XML/XRD/Serializer/JSON.php';
-        $s = new XML_XRD_Serializer_JSON($this);
-        return (string)$s;
+        return $this->to('xml');
     }
 }
-
 ?>

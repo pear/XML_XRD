@@ -54,7 +54,7 @@ class XML_XRD_Loader_XML
      *
      * @return void
      *
-     * @throws XML_XRD_LoadFileException When the XML is invalid or cannot be
+     * @throws XML_XRD_Loader_Exception When the XML is invalid or cannot be
      *                                   loaded
      */
     public function loadFile($file)
@@ -63,9 +63,9 @@ class XML_XRD_Loader_XML
         $x = simplexml_load_file($file);
         libxml_use_internal_errors($old);
         if ($x === false) {
-            throw new XML_XRD_LoadFileException(
+            throw new XML_XRD_Loader_Exception(
                 'Error loading XML file: ' . libxml_get_last_error()->message,
-                XML_XRD_LoadFileException::LOAD
+                XML_XRD_Loader_Exception::LOAD
             );
         }
         return $this->load($x);
@@ -78,24 +78,24 @@ class XML_XRD_Loader_XML
      *
      * @return void
      *
-     * @throws XML_XRD_LoadFileException When the XML is invalid or cannot be
+     * @throws XML_XRD_Loader_Exception When the XML is invalid or cannot be
      *                                   loaded
      */
     public function loadString($xml)
     {
         if ($xml == '') {
-            throw new XML_XRD_LoadFileException(
+            throw new XML_XRD_Loader_Exception(
                 'Error loading XML string: string empty',
-                XML_XRD_LoadFileException::LOAD
+                XML_XRD_Loader_Exception::LOAD
             );
         }
         $old = libxml_use_internal_errors(true);
         $x = simplexml_load_string($xml);
         libxml_use_internal_errors($old);
         if ($x === false) {
-            throw new XML_XRD_LoadFileException(
+            throw new XML_XRD_Loader_Exception(
                 'Error loading XML string: ' . libxml_get_last_error()->message,
-                XML_XRD_LoadFileException::LOAD
+                XML_XRD_Loader_Exception::LOAD
             );
         }
         return $this->load($x);
@@ -108,19 +108,19 @@ class XML_XRD_Loader_XML
      *
      * @return void
      *
-     * @throws XML_XRD_LoadFileException When the XML is invalid
+     * @throws XML_XRD_Loader_Exception When the XML is invalid
      */
     public function load(SimpleXMLElement $x)
     {
         $ns = $x->getDocNamespaces();
         if ($ns[''] !== self::NS_XRD) {
-            throw new XML_XRD_LoadFileException(
-                'Wrong document namespace', XML_XRD_LoadFileException::DOC_NS
+            throw new XML_XRD_Loader_Exception(
+                'Wrong document namespace', XML_XRD_Loader_Exception::DOC_NS
             );
         }
         if ($x->getName() != 'XRD') {
-            throw new XML_XRD_LoadFileException(
-                'XML root element is not "XRD"', XML_XRD_LoadFileException::DOC_ROOT
+            throw new XML_XRD_Loader_Exception(
+                'XML root element is not "XRD"', XML_XRD_Loader_Exception::DOC_ROOT
             );
         }
 

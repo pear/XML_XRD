@@ -2,6 +2,9 @@
 require_once 'XML/XRD.php';
 require_once 'XML/XRD/Loader/JSON.php';
 
+/**
+ * @covers XML_XRD_Loader_JSON
+ */
 class XML_XRD_Loader_JSONTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -11,7 +14,7 @@ class XML_XRD_Loader_JSONTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException XML_XRD_LoadFileException
+     * @expectedException XML_XRD_Loader_Exception
      * @expectedExceptionMessage Error loading JRD file
      */
     public function testLoadFileDoesNotExist()
@@ -21,13 +24,22 @@ class XML_XRD_Loader_JSONTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException XML_XRD_LoadFileException
+     * @expectedException XML_XRD_Loader_Exception
      * @expectedExceptionMessage Error loading JRD: string empty
      */
     public function testLoadStringEmpty()
     {
         $this->jl = new XML_XRD_Loader_JSON(new XML_XRD());
         $this->jl->loadString('');
+    }
+
+    /**
+     * @expectedException XML_XRD_Loader_Exception
+     * @expectedExceptionMessage Error loading JRD: JSON_ERROR_SYNTAX
+     */
+    public function testLoadStringFailBrokenJson()
+    {
+        $this->jl->loadString("{foo");
     }
 
     public function testLoadSubject()

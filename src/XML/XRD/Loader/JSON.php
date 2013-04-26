@@ -49,16 +49,16 @@ class XML_XRD_Loader_JSON
      *
      * @return void
      *
-     * @throws XML_XRD_LoadFileException When the JSON is invalid or cannot be
+     * @throws XML_XRD_Loader_Exception When the JSON is invalid or cannot be
      *                                   loaded
      */
     public function loadFile($file)
     {
         $json = file_get_contents($file);
         if ($json === false) {
-            throw new XML_XRD_LoadFileException(
+            throw new XML_XRD_Loader_Exception(
                 'Error loading JRD file: ' . $file,
-                XML_XRD_LoadFileException::LOAD
+                XML_XRD_Loader_Exception::LOAD
             );
         }
         return $this->loadString($json);
@@ -71,15 +71,15 @@ class XML_XRD_Loader_JSON
      *
      * @return void
      *
-     * @throws XML_XRD_LoadFileException When the JSON is invalid or cannot be
+     * @throws XML_XRD_Loader_Exception When the JSON is invalid or cannot be
      *                                   loaded
      */
     public function loadString($json)
     {
         if ($json == '') {
-            throw new XML_XRD_LoadFileException(
+            throw new XML_XRD_Loader_Exception(
                 'Error loading JRD: string empty',
-                XML_XRD_LoadFileException::LOAD
+                XML_XRD_Loader_Exception::LOAD
             );
         }
 
@@ -95,9 +95,9 @@ class XML_XRD_Loader_JSON
                 $json_errors[$value] = $name;
             }
         }
-        throw new XML_XRD_LoadFileException(
+        throw new XML_XRD_Loader_Exception(
             'Error loading JRD: ' . $json_errors[json_last_error()],
-            XML_XRD_LoadFileException::LOAD
+            XML_XRD_Loader_Exception::LOAD
         );
     }
 
