@@ -68,7 +68,7 @@ class XML_XRD_Element_Link extends XML_XRD_PropertyAccess
     /**
      * Create a new instance and load data from the XML element
      *
-     * @param string  $relOrXml   string with the relation name/URL
+     * @param string  $rel        string with the relation name/URL
      * @param string  $href       HREF value
      * @param string  $type       Type value
      * @param boolean $isTemplate When set to true, the $href is

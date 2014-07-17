@@ -27,6 +27,11 @@ require_once 'XML/XRD/Loader/Exception.php';
  */
 class XML_XRD_Loader
 {
+    /**
+     * Create new instance
+     *
+     * @param XML_XRD $xrd XRD object to load
+     */
     public function __construct(XML_XRD $xrd)
     {
         $this->xrd = $xrd;

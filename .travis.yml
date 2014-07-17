@@ -7,5 +7,5 @@ install:
   - pear install pear/PHP_CodeSniffer
   - phpenv rehash
 script:
-  - phpcs --standard=phpcs-ruleset.xml src
+  - phpcs src
   - cd tests && phpunit .
