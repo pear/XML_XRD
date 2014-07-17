@@ -7,10 +7,9 @@
         }
     ],
     "autoload": {
-        "classmap": [
-            "./"
-        ]
+        "psr-0": { "": "src/" }
     },
+    "include-path": [ "src/" ],
     "description": "PHP library to parse and generate \"Extensible Resource Descriptor (XRD) Version 1.0\" files",
     "license": "LGPL",
     "name": "pear/xml_xrd",
@@ -19,9 +18,6 @@
         "source": "https://github.com/pear/XML_XRD"
     },
     "type": "library",
-    "require": {
-        "pear/pear_exception": "*"
-    },
     "require-dev": {
         "phpunit/phpunit": "*"
     }
