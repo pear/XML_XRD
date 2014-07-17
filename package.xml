@@ -29,10 +29,10 @@ the Yadis communications protocol.
   <active>yes</active>
  </lead>
 
- <date>2013-04-26</date>
+ <date>2014-07-17</date>
 
  <version>
-  <release>0.3.0</release>
+  <release>0.3.1</release>
   <api>0.3.0</api>
  </version>
  <stability>
@@ -42,8 +42,7 @@ the Yadis communications protocol.
  <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL</license>
 
  <notes>
-- Full JRD loading and saving support
-- BC break: toXML() deprecated.
+  - Fix docblocks
  </notes>
 
  <contents>
@@ -138,6 +137,22 @@ the Yadis communications protocol.
 
  <phprelease />
  <changelog>
+
+  <release>
+   <version>
+    <release>0.3.1</release>
+    <api>0.3.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2014-07-17</date>
+   <license uri="http://www.gnu.org/licenses/lgpl.html">LGPL</license>
+   <notes>
+    - Fix docblocks
+   </notes>
+  </release>
 
   <release>
    <version>
