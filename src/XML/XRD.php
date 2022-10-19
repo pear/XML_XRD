@@ -223,7 +223,7 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      *
      * @return Traversable Iterator for the links
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->links);
     }
