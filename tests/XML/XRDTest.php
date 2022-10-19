@@ -1,24 +1,24 @@
 <?php
 require_once 'XML/XRD.php';
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @covers XML_XRD
  */
-class XML_XRDTest extends PHPUnit_Framework_TestCase
+class XML_XRDTest extends TestCase
 {
     public $xrd;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->xrd = new XML_XRD();
     }
 
-    /**
-     * @expectedException XML_XRD_Loader_Exception
-     * @expectedExceptionMessage No loader for XRD type "batty"
-     */
     public function testLoadStringNoLoader()
     {
+        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectExceptionMessage('No loader for XRD type "batty"');
         @$this->xrd->loadString('foo', 'batty');
     }
 
@@ -37,12 +37,10 @@ XRD;
         $this->assertEquals('http://example.com/gpburdell', $this->xrd->subject);
     }
 
-    /**
-     * @expectedException XML_XRD_Loader_Exception
-     * @expectedExceptionMessage Detecting file type failed
-     */
     public function testLoadStringFailEmpty()
     {
+        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectExceptionMessage('Detecting file type failed');
         $this->xrd->loadString("");
     }
 
@@ -164,7 +162,7 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $links = $this->xrd->getAll('cv');
-        $this->assertInternalType('array', $links);
+        $this->assertIsArray($links);
         $this->assertEquals(3, count($links));
         foreach ($links as $link) {
             $this->assertInstanceOf('XML_XRD_Element_Link', $link);
@@ -178,7 +176,7 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $links = $this->xrd->getAll('cv', 'text/html');
-        $this->assertInternalType('array', $links);
+        $this->assertIsArray($links);
         $this->assertEquals(1, count($links));
         foreach ($links as $link) {
             $this->assertInstanceOf('XML_XRD_Element_Link', $link);
@@ -190,7 +188,7 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $links = $this->xrd->getAll('cv', 'text/xhtml+xml');
-        $this->assertInternalType('array', $links);
+        $this->assertIsArray($links);
         $this->assertEquals(1, count($links));
         foreach ($links as $link) {
             $this->assertInstanceOf('XML_XRD_Element_Link', $link);
@@ -202,7 +200,7 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $links = $this->xrd->getAll('cv', 'text/html', false);
-        $this->assertInternalType('array', $links);
+        $this->assertIsArray($links);
         $this->assertEquals(1, count($links));
         foreach ($links as $link) {
             $this->assertInstanceOf('XML_XRD_Element_Link', $link);
@@ -214,16 +212,16 @@ XRD;
     {
         $this->xrd->subject = 'foo@example.org';
         $json = $this->xrd->to('json');
-        $this->assertInternalType('string', $json);
-        $this->assertContains('foo@example.org', $json);
+        $this->assertIsString($json);
+        $this->assertStringContainsString('foo@example.org', $json);
     }
 
     public function testToXml()
     {
         $this->xrd->subject = 'foo@example.org';
         $xml = $this->xrd->toXML();
-        $this->assertInternalType('string', $xml);
-        $this->assertContains('<Subject>foo@example.org</Subject>', $xml);
+        $this->assertIsString($xml);
+        $this->assertStringContainsString('<Subject>foo@example.org</Subject>', $xml);
     }
 
 }
