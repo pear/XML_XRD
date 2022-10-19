@@ -47,7 +47,7 @@ abstract class XML_XRD_PropertyAccess implements ArrayAccess
      *
      * @return boolean True if it exists
      */
-    public function offsetExists($type)
+    public function offsetExists($type): bool
     {
         foreach ($this->properties as $prop) {
             if ($prop->type == $type) {
@@ -66,7 +66,7 @@ abstract class XML_XRD_PropertyAccess implements ArrayAccess
      *
      * @return string Property value or NULL if empty
      */
-    public function offsetGet($type)
+    public function offsetGet($type): mixed
     {
         foreach ($this->properties as $prop) {
             if ($prop->type == $type) {
@@ -88,7 +88,7 @@ abstract class XML_XRD_PropertyAccess implements ArrayAccess
      *
      * @throws XML_XRD_LogicException Always
      */
-    public function offsetSet($type, $value)
+    public function offsetSet($type, $value): void
     {
         throw new XML_XRD_LogicException('Changing properties not implemented');
     }
@@ -104,7 +104,7 @@ abstract class XML_XRD_PropertyAccess implements ArrayAccess
      *
      * @throws XML_XRD_LogicException Always
      */
-    public function offsetUnset($type)
+    public function offsetUnset($type): void
     {
         throw new XML_XRD_LogicException('Changing properties not implemented');
     }
