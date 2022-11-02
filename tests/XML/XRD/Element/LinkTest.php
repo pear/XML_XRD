@@ -1,27 +1,28 @@
 <?php
-require_once 'XML/XRD.php';
 
 use PHPUnit\Framework\TestCase;
+use XRD\Document;
+use XRD\Element\Link;
 
 /**
- * @covers XML_XRD_Element_Link
+ * @covers Link
  */
-class XML_XRD_Element_LinkTest extends TestCase
+class LinkTest extends TestCase
 {
     public $xrd;
     public $link;
 
     public function setUp(): void
     {
-        $this->xrd = new XML_XRD();
+        $this->xrd = new Document();
         $this->xrd->loadFile(__DIR__ . '/../../../xrd/xrd-1.0-b1.xrd');
         $this->link = $this->xrd->get('http://spec.example.net/photo/1.0');
-        $this->assertInstanceOf('XML_XRD_Element_Link', $this->link);
+        $this->assertInstanceOf(Link::class, $this->link);
     }
 
     public function test__constructParamHref()
     {
-        $link = new XML_XRD_Element_Link(
+        $link = new Link(
             'http://spec.example.net/photo/1.0',
             'http://photos.example.com/gpburdell.jpg',
             'image/jpeg'
@@ -34,7 +35,7 @@ class XML_XRD_Element_LinkTest extends TestCase
 
     public function test__constructParamHrefTemplate()
     {
-        $link = new XML_XRD_Element_Link(
+        $link = new Link(
             'lrdd',
             'http://example.org/webfinger/{uri}',
             'application/xrd+xml',
@@ -108,7 +109,7 @@ class XML_XRD_Element_LinkTest extends TestCase
 
     public function testGetTitleLangNotFoundFallbackNoLang()
     {
-        $xrd = new XML_XRD();
+        $xrd = new Document();
         $xrd->loadFile(__DIR__ . '/../../../xrd/link-title.xrd');
         $link = $xrd->get('name');
         $this->assertEquals(
@@ -120,7 +121,7 @@ class XML_XRD_Element_LinkTest extends TestCase
 
     public function testArrayAccess()
     {
-        $xrd = new XML_XRD();
+        $xrd = new Document();
         $xrd->loadFile(__DIR__ . '/../../../xrd/properties.xrd');
         $link = $xrd->get('link');
         $this->assertEquals('Stevie', $link['name']);

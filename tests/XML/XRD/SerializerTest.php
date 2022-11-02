@@ -1,20 +1,21 @@
 <?php
-require_once 'XML/XRD/Loader.php';
-require_once 'XML/XRD.php';
 
 use PHPUnit\Framework\TestCase;
+use XRD\Document;
+use XRD\Serializer;
+use XRD\Serializer\SerializerException;
 
 /**
- * @covers XML_XRD_Serializer
+ * @covers Serializer
  */
-class XML_XRD_SerializerTest extends TestCase
+class SerializerTest extends TestCase
 {
     protected $cleanupList = array();
 
     public function setUp(): void
     {
-        $this->xrd = new XML_XRD();
-        $this->serializer = new XML_XRD_Serializer($this->xrd);
+        $this->xrd = new Document();
+        $this->serializer = new Serializer($this->xrd);
     }
 
     public function testToJson()
@@ -27,7 +28,7 @@ class XML_XRD_SerializerTest extends TestCase
 
     public function testToUnsupported()
     {
-        $this->expectException(XML_XRD_Serializer_Exception::class);
+        $this->expectException(SerializerException::class);
         $this->expectExceptionMessage('No serializer for type "batty"');
         $this->xrd->subject = 'foo@example.org';
         @$this->serializer->to('batty');

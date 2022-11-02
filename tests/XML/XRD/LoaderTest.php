@@ -1,20 +1,21 @@
 <?php
-require_once 'XML/XRD/Loader.php';
-require_once 'XML/XRD.php';
 
 use PHPUnit\Framework\TestCase;
+use XRD\Document;
+use XRD\Loader;
+use XRD\Loader\LoaderException;
 
 /**
- * @covers XML_XRD_Loader
+ * @covers Loader
  */
-class XML_XRD_LoaderTest extends TestCase
+class LoaderTest extends TestCase
 {
     protected $cleanupList = array();
 
     public function setUp(): void
     {
-        $this->xrd = new XML_XRD();
-        $this->loader = new XML_XRD_Loader($this->xrd);
+        $this->xrd = new Document();
+        $this->loader = new Loader($this->xrd);
     }
 
     public function tearDown(): void
@@ -36,7 +37,7 @@ class XML_XRD_LoaderTest extends TestCase
 
     public function testLoadFileTypeWrong()
     {
-        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectException(LoaderException::class);
         $this->expectExceptionMessage('No loader for XRD type "foobarbaz"');
         @$this->loader->loadFile(
             __DIR__ . '/../../xrd/properties.xrd',
@@ -63,7 +64,7 @@ class XML_XRD_LoaderTest extends TestCase
 
     public function testLoadStringTypeWrong()
     {
-        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectException(LoaderException::class);
         $this->expectExceptionMessage('No loader for XRD type "foobarbaz"');
         @$this->loader->loadString(
             '{"subject":"gpburdell@example.org"}',
@@ -82,14 +83,14 @@ class XML_XRD_LoaderTest extends TestCase
 
     public function testDetectTypeFromFileDoesNotExist()
     {
-        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectException(LoaderException::class);
         $this->expectExceptionMessage('Error loading XRD file: File does not exist');
         $this->loader->detectTypeFromFile(__DIR__ . '/../doesnotexist');
     }
 
     public function testDetectTypeFromFileCannotOpen()
     {
-        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectException(LoaderException::class);
         $this->expectExceptionMessage('Cannot open file to determine type');
         $file = tempnam(sys_get_temp_dir(), 'xml_xrd-unittests');
         $this->cleanupList[] = $file;
@@ -99,7 +100,7 @@ class XML_XRD_LoaderTest extends TestCase
 
     public function testDetectTypeFromStringUnknownFormat()
     {
-        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectException(LoaderException::class);
         $this->expectExceptionMessage('Detecting file type failed');
         $this->loader->detectTypeFromString('asdf');
     }

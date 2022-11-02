@@ -1,44 +1,47 @@
 <?php
-require_once 'XML/XRD.php';
-require_once 'XML/XRD/Loader/XML.php';
+
+namespace Loader;
 
 use PHPUnit\Framework\TestCase;
+use XRD\Document;
+use XRD\Loader\XML;
+use XRD\Loader\LoaderException;
 
 /**
- * @covers XML_XRD_Loader_XML
+ * @covers XML
  */
-class XML_XRD_Loader_XMLTest extends TestCase
+class XMLTest extends TestCase
 {
     public function setUp(): void
     {
-        $this->xrd = new XML_XRD();
-        $this->xl = new XML_XRD_Loader_XML($this->xrd);
+        $this->xrd = new Document();
+        $this->xl = new XML($this->xrd);
     }
 
     public function testLoadFileDoesNotExist()
     {
-        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectException(LoaderException::class);
         $this->expectExceptionMessage('Error loading XML file: failed to load external entity');
         $this->xl->loadFile(__DIR__ . '/../doesnotexist');
     }
 
     public function testLoadStringEmpty()
     {
-        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectException(LoaderException::class);
         $this->expectExceptionMessage('Error loading XML string: string empty');
         $this->xl->loadString('');
     }
 
     public function testLoadStringFailBrokenXml()
     {
-        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectException(LoaderException::class);
         $this->expectExceptionMessage('Error loading XML string: Start tag expected');
         $this->xl->loadString("<?xml");
     }
 
     public function testLoadXmlWrongNamespace()
     {
-        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectException(LoaderException::class);
         $this->expectExceptionMessage('Wrong document namespace');
         $xrdstring = <<<XRD
 <?xml version="1.0"?>
@@ -51,7 +54,7 @@ XRD;
 
     public function testLoadXmlWrongRootElement()
     {
-        $this->expectException(XML_XRD_Loader_Exception::class);
+        $this->expectException(LoaderException::class);
         $this->expectExceptionMessage('XML root element is not "XRD"');
         $xrdstring = <<<XRD
 <?xml version="1.0"?>
