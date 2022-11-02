@@ -11,19 +11,22 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
-require_once 'XML/XRD/PropertyAccess.php';
-require_once 'XML/XRD/Element/Link.php';
-require_once 'XML/XRD/Loader.php';
-require_once 'XML/XRD/Serializer.php';
+namespace XRD;
+
+use XRD\Element\Link;
+use XRD\Loader;
+use XRD\Loader\LoaderException;
+use XRD\PropertyAccess;
+use XRD\Serializer;
 
 /**
  * Main class used to load XRD documents from string or file.
  *
  * After loading the file, access to links is possible with get() and getAll(),
- * as well as foreach-iterating over the XML_XRD object.
+ * as well as foreach-iterating over the Document object.
  *
  * Property access is possible with getProperties() and array access (foreach)
- * on the XML_XRD object.
+ * on the Document object.
  *
  * Verification that the subject/aliases match the requested URL can be done with
  * describes().
@@ -35,19 +38,19 @@ require_once 'XML/XRD/Serializer.php';
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
+class Document extends PropertyAccess implements \IteratorAggregate
 {
     /**
      * XRD file/string loading dispatcher
      *
-     * @var XML_XRD_Loader
+     * @var Loader
      */
     public $loader;
 
     /**
      * XRD serializing dispatcher
      *
-     * @var XML_XRD_Serializer
+     * @var Serializer
      */
     public $serializer;
 
@@ -100,13 +103,12 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      *
      * @return void
      *
-     * @throws XML_XRD_Loader_Exception When the file is invalid or cannot be
-     *                                   loaded
+     * @throws LoaderException When the file is invalid or cannot be loaded
      */
     public function loadFile($file, $type = null)
     {
         if (!isset($this->loader)) {
-            $this->loader = new XML_XRD_Loader($this);
+            $this->loader = new Loader($this);
         }
         return $this->loader->loadFile($file, $type);
     }
@@ -119,13 +121,12 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      *
      * @return void
      *
-     * @throws XML_XRD_Loader_Exception When the string is invalid or cannot be
-     *                                   loaded
+     * @throws LoaderException When the string is invalid or cannot be loaded
      */
     public function loadString($str, $type = null)
     {
         if (!isset($this->loader)) {
-            $this->loader = new XML_XRD_Loader($this);
+            $this->loader = new Loader($this);
         }
         return $this->loader->loadString($str, $type);
     }
@@ -165,7 +166,7 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      *                              could be found, the best link without a
      *                              type will be returned
      *
-     * @return XML_XRD_Element_Link Link object or NULL if none found
+     * @return Link Link object or NULL if none found
      */
     public function get($rel, $type = null, $typeFallback = true)
     {
@@ -187,7 +188,7 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      *                              could be found, the best link without a
      *                              type will be returned
      *
-     * @return array Array of XML_XRD_Element_Link objects
+     * @return array Array of Link objects
      */
     public function getAll($rel, $type = null, $typeFallback = true)
     {
@@ -223,9 +224,9 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
      *
      * @return Traversable Iterator for the links
      */
-    public function getIterator(): Traversable
+    public function getIterator()
     {
-        return new ArrayIterator($this->links);
+        return new \ArrayIterator($this->links);
     }
 
     /**
@@ -238,7 +239,7 @@ class XML_XRD extends XML_XRD_PropertyAccess implements IteratorAggregate
     public function to($type)
     {
         if (!isset($this->serializer)) {
-            $this->serializer = new XML_XRD_Serializer($this);
+            $this->serializer = new Serializer($this);
         }
         return $this->serializer->to($type);
     }

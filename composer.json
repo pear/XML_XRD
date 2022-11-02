@@ -7,9 +7,10 @@
         }
     ],
     "autoload": {
-        "psr-0": { "XML": "src/" }
+        "psr-4": {
+            "XRD\\": "src/"
+        }
     },
-    "include-path": [ "src/" ],
     "description": "PHP library to parse and generate \"Extensible Resource Descriptor (XRD) Version 1.0\" files",
     "homepage": "http://pear.php.net/package/XML_XRD",
     "license": "LGPL-3.0-or-later",

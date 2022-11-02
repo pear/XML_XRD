@@ -11,7 +11,10 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
-require_once 'XML/XRD/Serializer/Exception.php';
+namespace XRD;
+
+use XRD\Document;
+use XRD\Serializer\SerializerException;
 
 /**
  * Serialization dispatcher - loads the correct serializer for saving XRD data.
@@ -23,21 +26,21 @@ require_once 'XML/XRD/Serializer/Exception.php';
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD_Serializer
+class Serializer
 {
     /**
      * XRD data storage
      *
-     * @var XML_XRD
+     * @var Document
      */
     protected $xrd;
 
     /**
      * Init object with xrd object
      *
-     * @param XML_XRD $xrd Data storage the data are fetched from
+     * @param Document $xrd Data storage the data are fetched from
      */
-    public function __construct(XML_XRD $xrd)
+    public function __construct(Document $xrd)
     {
         $this->xrd = $xrd;
     }
@@ -59,20 +62,18 @@ class XML_XRD_Serializer
      *
      * @param string $type File type: xml or json
      *
-     * @return XML_XRD_Loader
+     * @return Serializer
      */
     protected function getSerializer($type)
     {
-        $class = 'XML_XRD_Serializer_' . strtoupper($type);
-        $file = str_replace('_', '/', $class) . '.php';
-        include_once $file;
+        $class = 'XRD\\Serializer\\' . strtoupper($type);
         if (class_exists($class)) {
             return new $class($this->xrd);
         }
 
-        throw new XML_XRD_Serializer_Exception(
+        throw new SerializerException(
             'No serializer for type "' . $type . '"',
-            XML_XRD_Loader_Exception::NO_LOADER
+            SerializerException::NO_SERIALIZER
         );
     }
 }

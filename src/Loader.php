@@ -11,7 +11,9 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
-require_once 'XML/XRD/Loader/Exception.php';
+namespace XRD;
+
+use XRD\Loader\LoaderException;
 
 /**
  * File/string loading dispatcher.
@@ -25,14 +27,14 @@ require_once 'XML/XRD/Loader/Exception.php';
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD_Loader
+class Loader
 {
     /**
      * Create new instance
      *
-     * @param XML_XRD $xrd XRD object to load
+     * @param Document $xrd Document object to load
      */
-    public function __construct(XML_XRD $xrd)
+    public function __construct(Document $xrd)
     {
         $this->xrd = $xrd;
     }
@@ -48,8 +50,7 @@ class XML_XRD_Loader
      *
      * @return void
      *
-     * @throws XML_XRD_Loader_Exception When the file is invalid or cannot be
-     *                                   loaded
+     * @throws LoaderException When the file is invalid or cannot be loaded
      */
     public function loadFile($file, $type = null)
     {
@@ -68,8 +69,7 @@ class XML_XRD_Loader
      *
      * @return void
      *
-     * @throws XML_XRD_Loader_Exception When the string is invalid or cannot be
-     *                                   loaded
+     * @throws LoaderException When the string is invalid or cannot be loaded
      */
     public function loadString($str, $type = null)
     {
@@ -85,20 +85,18 @@ class XML_XRD_Loader
      *
      * @param string $type File type: xml or json
      *
-     * @return XML_XRD_Loader
+     * @return Loader
      */
     protected function getLoader($type)
     {
-        $class = 'XML_XRD_Loader_' . strtoupper($type);
-        $file = str_replace('_', '/', $class) . '.php';
-        include_once $file;
+        $class = 'XRD\\Loader\\' . strtoupper($type);
         if (class_exists($class)) {
             return new $class($this->xrd);
         }
 
-        throw new XML_XRD_Loader_Exception(
+        throw new LoaderException(
             'No loader for XRD type "' . $type . '"',
-            XML_XRD_Loader_Exception::NO_LOADER
+            LoaderException::NO_LOADER
         );
     }
 
@@ -109,21 +107,21 @@ class XML_XRD_Loader
      *
      * @return string File type ('xml' or 'json')
      *
-     * @throws XML_XRD_Loader_Exception When opening the file fails.
+     * @throws LoaderException When opening the file fails.
      */
     public function detectTypeFromFile($file)
     {
         if (!file_exists($file)) {
-            throw new XML_XRD_Loader_Exception(
+            throw new LoaderException(
                 'Error loading XRD file: File does not exist',
-                XML_XRD_Loader_Exception::OPEN_FILE
+                LoaderException::OPEN_FILE
             );
         }
         $handle = fopen($file, 'r');
         if (!$handle) {
-            throw new XML_XRD_Loader_Exception(
+            throw new LoaderException(
                 'Cannot open file to determine type',
-                XML_XRD_Loader_Exception::OPEN_FILE
+                LoaderException::OPEN_FILE
             );
         }
 
@@ -139,7 +137,7 @@ class XML_XRD_Loader
      *
      * @return string File type ('xml' or 'json')
      *
-     * @throws XML_XRD_Loader_Exception When the type cannot be detected
+     * @throws LoaderException When the type cannot be detected
      */
     public function detectTypeFromString($str)
     {
@@ -149,9 +147,9 @@ class XML_XRD_Loader
             return 'xml';
         }
 
-        throw new XML_XRD_Loader_Exception(
+        throw new LoaderException(
             'Detecting file type failed',
-            XML_XRD_Loader_Exception::DETECT_TYPE
+            LoaderException::DETECT_TYPE
         );
     }
 

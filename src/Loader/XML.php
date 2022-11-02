@@ -11,6 +11,14 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
+namespace XRD\Loader;
+
+use XRD\Document;
+use XRD\PropertyAccess;
+use XRD\Element\Link;
+use XRD\Element\Property;
+use XRD\Loader\LoaderException;
+
 /**
  * Loads XRD data from an XML file
  *
@@ -21,12 +29,12 @@
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD_Loader_XML
+class XML
 {
     /**
      * Data storage the XML data get loaded into
      *
-     * @var XML_XRD
+     * @var Document
      */
     protected $xrd;
 
@@ -35,14 +43,12 @@ class XML_XRD_Loader_XML
      */
     const NS_XRD = 'http://docs.oasis-open.org/ns/xri/xrd-1.0';
 
-
-
     /**
      * Init object with xrd object
      *
-     * @param XML_XRD $xrd Data storage the XML data get loaded into
+     * @param Document $xrd Data storage the XML data get loaded into
      */
-    public function __construct(XML_XRD $xrd)
+    public function __construct(Document $xrd)
     {
         $this->xrd = $xrd;
     }
@@ -54,8 +60,7 @@ class XML_XRD_Loader_XML
      *
      * @return void
      *
-     * @throws XML_XRD_Loader_Exception When the XML is invalid or cannot be
-     *                                   loaded
+     * @throws LoaderException When the XML is invalid or cannot be loaded
      */
     public function loadFile($file)
     {
@@ -63,9 +68,9 @@ class XML_XRD_Loader_XML
         $x = simplexml_load_file($file);
         libxml_use_internal_errors($old);
         if ($x === false) {
-            throw new XML_XRD_Loader_Exception(
+            throw new LoaderException(
                 'Error loading XML file: ' . libxml_get_last_error()->message,
-                XML_XRD_Loader_Exception::LOAD
+                LoaderException::LOAD
             );
         }
         return $this->load($x);
@@ -78,24 +83,23 @@ class XML_XRD_Loader_XML
      *
      * @return void
      *
-     * @throws XML_XRD_Loader_Exception When the XML is invalid or cannot be
-     *                                   loaded
+     * @throws LoaderException When the XML is invalid or cannot be loaded
      */
     public function loadString($xml)
     {
         if ($xml == '') {
-            throw new XML_XRD_Loader_Exception(
+            throw new LoaderException(
                 'Error loading XML string: string empty',
-                XML_XRD_Loader_Exception::LOAD
+                LoaderException::LOAD
             );
         }
         $old = libxml_use_internal_errors(true);
         $x = simplexml_load_string($xml);
         libxml_use_internal_errors($old);
         if ($x === false) {
-            throw new XML_XRD_Loader_Exception(
+            throw new LoaderException(
                 'Error loading XML string: ' . libxml_get_last_error()->message,
-                XML_XRD_Loader_Exception::LOAD
+                LoaderException::LOAD
             );
         }
         return $this->load($x);
@@ -108,19 +112,19 @@ class XML_XRD_Loader_XML
      *
      * @return void
      *
-     * @throws XML_XRD_Loader_Exception When the XML is invalid
+     * @throws LoaderException When the XML is invalid
      */
-    public function load(SimpleXMLElement $x)
+    public function load(\SimpleXMLElement $x)
     {
         $ns = $x->getDocNamespaces();
         if ($ns[''] !== self::NS_XRD) {
-            throw new XML_XRD_Loader_Exception(
-                'Wrong document namespace', XML_XRD_Loader_Exception::DOC_NS
+            throw new LoaderException(
+                'Wrong document namespace', LoaderException::DOC_NS
             );
         }
         if ($x->getName() != 'XRD') {
-            throw new XML_XRD_Loader_Exception(
-                'XML root element is not "XRD"', XML_XRD_Loader_Exception::DOC_ROOT
+            throw new LoaderException(
+                'XML root element is not "XRD"', LoaderException::DOC_ROOT
             );
         }
 
@@ -155,9 +159,7 @@ class XML_XRD_Loader_XML
      *
      * @return boolean True when all went well
      */
-    protected function loadProperties(
-        XML_XRD_PropertyAccess $store, SimpleXMLElement $x
-    ) {
+    protected function loadProperties(PropertyAccess $store, \SimpleXMLElement $x) {
         foreach ($x->Property as $xProp) {
             $store->properties[] = $this->loadProperty($xProp);
         }
@@ -168,11 +170,11 @@ class XML_XRD_Loader_XML
      *
      * @param object $x XML link element
      *
-     * @return XML_XRD_Element_Link Created link object
+     * @return Link Created link object
      */
-    protected function loadLink(SimpleXMLElement $x)
+    protected function loadLink(\SimpleXMLElement $x)
     {
-        $link = new XML_XRD_Element_Link();
+        $link = new Link();
         foreach (array('rel', 'type', 'href', 'template') as $var) {
             if (isset($x[$var])) {
                 $link->$var = (string)$x[$var];
@@ -199,11 +201,11 @@ class XML_XRD_Loader_XML
      *
      * @param object $x XML property element
      *
-     * @return XML_XRD_Element_Property Created link object
+     * @return Property Created link object
      */
-    protected function loadProperty(SimpleXMLElement $x)
+    protected function loadProperty(\SimpleXMLElement $x)
     {
-        $prop = new XML_XRD_Element_Property();
+        $prop = new Property();
         if (isset($x['type'])) {
             $prop->type = (string)$x['type'];
         }

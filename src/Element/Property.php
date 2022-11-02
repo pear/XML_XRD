@@ -11,6 +11,8 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
+namespace XRD\Element;
+
 /**
  * Property element in a XRD document.
  *
@@ -23,7 +25,7 @@
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD_Element_Property
+class Property
 {
     /**
      * Value of the property.

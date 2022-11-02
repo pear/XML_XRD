@@ -11,6 +11,14 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
+namespace XRD\Loader;
+
+use XRD\Document;
+use XRD\Element\Link;
+use XRD\Element\Property;
+use XRD\PropertyAccess;
+use XRD\Loader\LoaderException;
+
 /**
  * Loads XRD data from a JSON file
  *
@@ -21,23 +29,21 @@
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD_Loader_JSON
+class JSON
 {
     /**
      * Data storage the XML data get loaded into
      *
-     * @var XML_XRD
+     * @var Document
      */
     protected $xrd;
-
-
 
     /**
      * Init object with xrd object
      *
-     * @param XML_XRD $xrd Data storage the JSON data get loaded into
+     * @param Document $xrd Data storage the JSON data get loaded into
      */
-    public function __construct(XML_XRD $xrd)
+    public function __construct(Document $xrd)
     {
         $this->xrd = $xrd;
     }
@@ -49,16 +55,15 @@ class XML_XRD_Loader_JSON
      *
      * @return void
      *
-     * @throws XML_XRD_Loader_Exception When the JSON is invalid or cannot be
-     *                                   loaded
+     * @throws LoaderException When the JSON is invalid or cannot be loaded
      */
     public function loadFile($file)
     {
         $json = file_get_contents($file);
         if ($json === false) {
-            throw new XML_XRD_Loader_Exception(
+            throw new LoaderException(
                 'Error loading JRD file: ' . $file,
-                XML_XRD_Loader_Exception::LOAD
+                LoaderException::LOAD
             );
         }
         return $this->loadString($json);
@@ -71,15 +76,15 @@ class XML_XRD_Loader_JSON
      *
      * @return void
      *
-     * @throws XML_XRD_Loader_Exception When the JSON is invalid or cannot be
+     * @throws LoaderException When the JSON is invalid or cannot be
      *                                   loaded
      */
     public function loadString($json)
     {
         if ($json == '') {
-            throw new XML_XRD_Loader_Exception(
+            throw new LoaderException(
                 'Error loading JRD: string empty',
-                XML_XRD_Loader_Exception::LOAD
+                LoaderException::LOAD
             );
         }
 
@@ -95,9 +100,9 @@ class XML_XRD_Loader_JSON
                 $json_errors[$value] = $name;
             }
         }
-        throw new XML_XRD_Loader_Exception(
+        throw new LoaderException(
             'Error loading JRD: ' . $json_errors[json_last_error()],
-            XML_XRD_Loader_Exception::LOAD
+            LoaderException::LOAD
         );
     }
 
@@ -108,7 +113,7 @@ class XML_XRD_Loader_JSON
      *
      * @return void
      */
-    public function load(stdClass $j)
+    public function load(\stdClass $j)
     {
         if (isset($j->subject)) {
             $this->xrd->subject = (string)$j->subject;
@@ -141,14 +146,14 @@ class XML_XRD_Loader_JSON
      * @return boolean True when all went well
      */
     protected function loadProperties(
-        XML_XRD_PropertyAccess $store, stdClass $j
+        PropertyAccess $store, \stdClass $j
     ) {
         if (!isset($j->properties)) {
             return true;
         }
 
         foreach ($j->properties as $type => $jProp) {
-            $store->properties[] = new XML_XRD_Element_Property(
+            $store->properties[] = new Property(
                 $type, (string)$jProp
             );
         }
@@ -161,11 +166,11 @@ class XML_XRD_Loader_JSON
      *
      * @param object $j JSON link object
      *
-     * @return XML_XRD_Element_Link Created link object
+     * @return Link Created link object
      */
-    protected function loadLink(stdClass $j)
+    protected function loadLink(\stdClass $j)
     {
-        $link = new XML_XRD_Element_Link();
+        $link = new Link();
         foreach (array('rel', 'type', 'href', 'template') as $var) {
             if (isset($j->$var)) {
                 $link->$var = (string)$j->$var;
