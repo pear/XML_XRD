@@ -11,10 +11,12 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
+namespace XRD\Serializer;
+
+use XRD\XRDException;
+
 /**
- * Base exception interface for all XML_XRD related exceptions.
- * With that interface, it is possible to catch all XML_XRD exceptions
- * with a single catch statement.
+ * XML_XRD exception that's thrown when saving an XRD file fails.
  *
  * @category XML
  * @package  XML_XRD
@@ -23,8 +25,11 @@
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-interface XML_XRD_Exception
+class SerializerException extends \Exception implements XRDException
 {
+    /**
+     * Unsupported XRD file/string type (no serializer)
+     */
+    const NO_SERIALIZER = 10;
 }
-
 ?>

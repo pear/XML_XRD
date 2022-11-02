@@ -11,7 +11,9 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
-require_once 'XML/XRD/PropertyAccess.php';
+namespace XRD\Element;
+
+use XRD\PropertyAccess;
 
 /**
  * Link element in a XRD file. Attribute access via object properties.
@@ -26,7 +28,7 @@ require_once 'XML/XRD/PropertyAccess.php';
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD_Element_Link extends XML_XRD_PropertyAccess
+class Link extends PropertyAccess
 {
     /**
      * Link relation

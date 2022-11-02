@@ -11,8 +11,13 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
+namespace XRD\Serializer;
+
+use XRD\Document;
+use XRD\Element\Property;
+
 /**
- * Generate XML from a XML_XRD object.
+ * Generate XML from a Document object.
  *
  * @category XML
  * @package  XML_XRD
@@ -21,16 +26,16 @@
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD_Serializer_XML
+class XML
 {
     protected $xrd;
 
     /**
      * Create new instance
      *
-     * @param XML_XRD $xrd XRD instance to convert to XML
+     * @param Document $xrd Document instance to convert to XML
      */
-    public function __construct(XML_XRD $xrd)
+    public function __construct(Document $xrd)
     {
         $this->xrd = $xrd;
     }
@@ -43,7 +48,7 @@ class XML_XRD_Serializer_XML
     public function __toString()
     {
         $hasXsi = false;
-        $x = new XMLWriter();
+        $x = new \XMLWriter();
         $x->openMemory();
         //no encoding means UTF-8
         //http://www.w3.org/TR/2008/REC-xml-20081126/#sec-guessing-no-ext-info
@@ -113,14 +118,14 @@ class XML_XRD_Serializer_XML
     /**
      * Write a property in the XMLWriter stream output
      *
-     * @param XMLWriter                $x        Writer object to write to
-     * @param XML_XRD_Element_Property $property Property to write
-     * @param boolean                  &$hasXsi  If an xsi: attribute is used
+     * @param \XMLWriter  $x        Writer object to write to
+     * @param Property    $property Property to write
+     * @param boolean     &$hasXsi  If an xsi: attribute is used
      *
      * @return void
      */
     protected function writeProperty(
-        XMLWriter $x, XML_XRD_Element_Property $property, &$hasXsi
+        \XMLWriter $x, Property $property, &$hasXsi
     ) {
         $x->startElement('Property');
         $x->writeAttribute('type', $property->type);

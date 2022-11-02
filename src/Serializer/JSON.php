@@ -11,6 +11,10 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
+namespace XRD\Serializer;
+
+use XRD\Document;
+
 /**
  * Generate JSON from a XML_XRD object (for JRD files).
  *
@@ -22,16 +26,16 @@
  * @link     http://pear.php.net/package/XML_XRD
  * @link     http://tools.ietf.org/html/rfc6415#appendix-A
  */
-class XML_XRD_Serializer_JSON
+class JSON
 {
     protected $xrd;
 
     /**
      * Create new instance
      *
-     * @param XML_XRD $xrd XRD instance to convert to JSON
+     * @param Document $xrd Document instance to convert to JSON
      */
-    public function __construct(XML_XRD $xrd)
+    public function __construct(Document $xrd)
     {
         $this->xrd = $xrd;
     }
@@ -43,7 +47,7 @@ class XML_XRD_Serializer_JSON
      */
     public function __toString()
     {
-        $o = new stdClass();
+        $o = new \stdClass();
         if ($this->xrd->expires !== null) {
             $o->expires = gmdate('Y-m-d\TH:i:s\Z', $this->xrd->expires);
         }
@@ -59,7 +63,7 @@ class XML_XRD_Serializer_JSON
         $o->links = array();
         foreach ($this->xrd->links as $link) {
             $lid = count($o->links);
-            $o->links[$lid] = new stdClass();
+            $o->links[$lid] = new \stdClass();
             if ($link->rel) {
                 $o->links[$lid]->rel = $link->rel;
             }

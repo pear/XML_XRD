@@ -11,10 +11,12 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
-require_once 'XML/XRD/Exception.php';
+namespace XRD;
+
+use XRD\XRDException;
 
 /**
- * XML_XRD exception that's thrown when saving an XRD file fails.
+ * XML_XRD exception that's thrown when something is not supported
  *
  * @category XML
  * @package  XML_XRD
@@ -23,7 +25,8 @@ require_once 'XML/XRD/Exception.php';
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD_Serializer_Exception extends Exception implements XML_XRD_Exception
+class LogicException extends \LogicException implements XRDException
 {
 }
+
 ?>

@@ -1,15 +1,19 @@
 <?php
-require_once 'XML/XRD.php';
+
+namespace Serializer;
+
+use PHPUnit\Framework\TestCase;
+use XRD\Document;
 
 /**
- * @covers XML_XRD_Serializer_JSON
+ * @covers JSON
  */
-class XML_XRD_Serializer_JSONTest extends PHPUnit_Framework_TestCase
+class JSONTest extends TestCase
 {
     public function testXrdRfc6415A()
     {
         $filePath = __DIR__ . '/../../../';
-        $x = new XML_XRD();
+        $x = new Document();
         $x->loadFile($filePath . 'xrd/rfc6415-A.xrd');
         $this->assertEquals(
             json_decode(file_get_contents($filePath . 'jrd/rfc6415-A.jrd')),
@@ -19,10 +23,10 @@ class XML_XRD_Serializer_JSONTest extends PHPUnit_Framework_TestCase
 
     public function testRemoveEmptyLinksArray()
     {
-        $x = new XML_XRD();
+        $x = new Document();
         $x->subject = 'foo';
 
-        $res = new stdClass();
+        $res = new \stdClass();
         $res->subject = 'foo';
         $this->assertEquals(
             $res,

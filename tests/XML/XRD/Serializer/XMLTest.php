@@ -1,10 +1,13 @@
 <?php
-require_once 'XML/XRD.php';
+
+use PHPUnit\Framework\TestCase;
+use XRD\Document;
+use XRD\Serializer\XML;
 
 /**
- * @covers XML_XRD_Serializer_XML
+ * @covers XML
  */
-class XML_XRD_Serializer_XMLTest extends PHPUnit_Framework_TestCase
+class XMLTest extends TestCase
 {
     public function testXrd10B1()
     {
@@ -28,7 +31,7 @@ class XML_XRD_Serializer_XMLTest extends PHPUnit_Framework_TestCase
 
     protected function assertXmlIsCorrect($file)
     {
-        $xrd = new XML_XRD();
+        $xrd = new Document();
         $xrd->loadFile($file);
         $this->assertXmlStringEqualsXmlFile(
             $file, $xrd->to('xml'),

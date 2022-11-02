@@ -1,16 +1,19 @@
 <?php
-require_once 'XML/XRD.php';
+
+use PHPUnit\Framework\TestCase;
+use XRD\Document;
+use XRD\Element\Property;
 
 /**
  * @covers XML_XRD_PropertyAccess
  */
-class XML_XRD_PropertyAccessTest extends PHPUnit_Framework_TestCase
+class XML_XRD_PropertyAccessTest extends TestCase
 {
     public $xrd;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->xrd = new XML_XRD();
+        $this->xrd = new Document();
     }
     public function testArrayAccess()
     {
@@ -36,19 +39,15 @@ class XML_XRD_PropertyAccessTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->xrd['doesnotexist']);
     }
 
-    /**
-     * @expectedException XML_XRD_LogicException
-     */
     public function testArrayAccessSet()
     {
+        $this->expectException(LogicException::class);
         $this->xrd['foo'] = 'bar';
     }
 
-    /**
-     * @expectedException XML_XRD_LogicException
-     */
     public function testArrayAccessUnset()
     {
+        $this->expectException(LogicException::class);
         unset($this->xrd['foo']);
     }
 
@@ -57,7 +56,7 @@ class XML_XRD_PropertyAccessTest extends PHPUnit_Framework_TestCase
         $this->xrd->loadFile(__DIR__ . '/../../xrd/properties.xrd');
         $props = array();
         foreach ($this->xrd->getProperties() as $property) {
-            $this->assertInstanceOf('XML_XRD_Element_Property', $property);
+            $this->assertInstanceOf(Property::class, $property);
             $props[] = $property;
         }
         $this->assertEquals(6, count($props));
@@ -74,7 +73,7 @@ class XML_XRD_PropertyAccessTest extends PHPUnit_Framework_TestCase
         $this->xrd->loadFile(__DIR__ . '/../../xrd/properties.xrd');
         $props = array();
         foreach ($this->xrd->getProperties('color') as $property) {
-            $this->assertInstanceOf('XML_XRD_Element_Property', $property);
+            $this->assertInstanceOf(Property::class, $property);
             $props[] = $property;
         }
         $this->assertEquals(2, count($props));

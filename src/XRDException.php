@@ -11,10 +11,12 @@
  * @link     http://pear.php.net/package/XML_XRD
  */
 
-require_once 'XML/XRD/Exception.php';
+namespace XRD;
 
 /**
- * XML_XRD exception that's thrown when something is not supported
+ * Base exception interface for all XML_XRD related exceptions.
+ * With that interface, it is possible to catch all XML_XRD exceptions
+ * with a single catch statement.
  *
  * @category XML
  * @package  XML_XRD
@@ -23,7 +25,7 @@ require_once 'XML/XRD/Exception.php';
  * @version  Release: @package_version@
  * @link     http://pear.php.net/package/XML_XRD
  */
-class XML_XRD_LogicException extends LogicException implements XML_XRD_Exception
+interface XRDException
 {
 }
 

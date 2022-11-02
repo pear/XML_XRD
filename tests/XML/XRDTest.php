@@ -1,24 +1,26 @@
 <?php
-require_once 'XML/XRD.php';
+
+use PHPUnit\Framework\TestCase;
+use XRD\Document;
+use XRD\Loader\LoaderException;
+use XRD\Element\Link;
 
 /**
  * @covers XML_XRD
  */
-class XML_XRDTest extends PHPUnit_Framework_TestCase
+class XRDTest extends TestCase
 {
     public $xrd;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->xrd = new XML_XRD();
+        $this->xrd = new Document();
     }
 
-    /**
-     * @expectedException XML_XRD_Loader_Exception
-     * @expectedExceptionMessage No loader for XRD type "batty"
-     */
     public function testLoadStringNoLoader()
     {
+        $this->expectException(LoaderException::class);
+        $this->expectExceptionMessage('No loader for XRD type "batty"');
         @$this->xrd->loadString('foo', 'batty');
     }
 
@@ -37,12 +39,10 @@ XRD;
         $this->assertEquals('http://example.com/gpburdell', $this->xrd->subject);
     }
 
-    /**
-     * @expectedException XML_XRD_Loader_Exception
-     * @expectedExceptionMessage Detecting file type failed
-     */
     public function testLoadStringFailEmpty()
     {
+        $this->expectException(LoaderException::class);
+        $this->expectExceptionMessage('Detecting file type failed');
         $this->xrd->loadString("");
     }
 
@@ -106,7 +106,7 @@ XRD;
         $this->xrd->loadFile(__DIR__ . '/../xrd/xrd-1.0-b1.xrd');
         $links = array();
         foreach ($this->xrd as $key => $link) {
-            $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+            $this->assertInstanceOf(Link::class, $link);
             $links[] = $link;
         }
         $this->assertEquals(2, count($links));
@@ -118,7 +118,7 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $link = $this->xrd->get('lrdd');
-        $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+        $this->assertInstanceOf(Link::class, $link);
         $this->assertEquals('http://example.com/lrdd/1', $link->href);
     }
 
@@ -126,7 +126,7 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $link = $this->xrd->get('picture', 'image/jpeg');
-        $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+        $this->assertInstanceOf(Link::class, $link);
         $this->assertEquals(
             'http://example.com/picture.jpg', $link->href,
             'Image without type is first, but with correct type is more'
@@ -138,7 +138,7 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $link = $this->xrd->get('picture', 'image/svg+xml');
-        $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+        $this->assertInstanceOf(Link::class, $link);
         $this->assertEquals(
             'http://example.com/picture-notype.jpg', $link->href
         );
@@ -156,7 +156,7 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $link = $this->xrd->get('cv', 'text/html', false);
-        $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+        $this->assertInstanceOf(Link::class, $link);
         $this->assertEquals('http://example.com/cv.html', $link->href);
     }
 
@@ -164,10 +164,10 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $links = $this->xrd->getAll('cv');
-        $this->assertInternalType('array', $links);
+        $this->assertIsArray($links);
         $this->assertEquals(3, count($links));
         foreach ($links as $link) {
-            $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+            $this->assertInstanceOf(Link::class, $link);
         }
         $this->assertEquals('http://example.com/cv.txt', $links[0]->href);
         $this->assertEquals('http://example.com/cv.html', $links[1]->href);
@@ -178,10 +178,10 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $links = $this->xrd->getAll('cv', 'text/html');
-        $this->assertInternalType('array', $links);
+        $this->assertIsArray($links);
         $this->assertEquals(1, count($links));
         foreach ($links as $link) {
-            $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+            $this->assertInstanceOf(Link::class, $link);
         }
         $this->assertEquals('http://example.com/cv.html', $links[0]->href);
     }
@@ -190,10 +190,10 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $links = $this->xrd->getAll('cv', 'text/xhtml+xml');
-        $this->assertInternalType('array', $links);
+        $this->assertIsArray($links);
         $this->assertEquals(1, count($links));
         foreach ($links as $link) {
-            $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+            $this->assertInstanceOf(Link::class, $link);
         }
         $this->assertEquals('http://example.com/cv.xml', $links[0]->href);
     }
@@ -202,10 +202,10 @@ XRD;
     {
         $this->xrd->loadFile(__DIR__ . '/../xrd/multilinks.xrd');
         $links = $this->xrd->getAll('cv', 'text/html', false);
-        $this->assertInternalType('array', $links);
+        $this->assertIsArray($links);
         $this->assertEquals(1, count($links));
         foreach ($links as $link) {
-            $this->assertInstanceOf('XML_XRD_Element_Link', $link);
+            $this->assertInstanceOf(Link::class, $link);
         }
         $this->assertEquals('http://example.com/cv.html', $links[0]->href);
     }
@@ -214,16 +214,16 @@ XRD;
     {
         $this->xrd->subject = 'foo@example.org';
         $json = $this->xrd->to('json');
-        $this->assertInternalType('string', $json);
-        $this->assertContains('foo@example.org', $json);
+        $this->assertIsString($json);
+        $this->assertStringContainsString('foo@example.org', $json);
     }
 
     public function testToXml()
     {
         $this->xrd->subject = 'foo@example.org';
         $xml = $this->xrd->toXML();
-        $this->assertInternalType('string', $xml);
-        $this->assertContains('<Subject>foo@example.org</Subject>', $xml);
+        $this->assertIsString($xml);
+        $this->assertStringContainsString('<Subject>foo@example.org</Subject>', $xml);
     }
 
 }
