@@ -1,10 +1,12 @@
 <?php
 require_once 'XML/XRD.php';
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @covers XML_XRD_Serializer_XML
  */
-class XML_XRD_Serializer_XMLTest extends PHPUnit_Framework_TestCase
+class XML_XRD_Serializer_XMLTest extends TestCase
 {
     public function testXrd10B1()
     {

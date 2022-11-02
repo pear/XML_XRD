@@ -1,14 +1,16 @@
 <?php
 require_once 'XML/XRD.php';
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @covers XML_XRD_PropertyAccess
  */
-class XML_XRD_PropertyAccessTest extends PHPUnit_Framework_TestCase
+class XML_XRD_PropertyAccessTest extends TestCase
 {
     public $xrd;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->xrd = new XML_XRD();
     }
@@ -36,19 +38,15 @@ class XML_XRD_PropertyAccessTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->xrd['doesnotexist']);
     }
 
-    /**
-     * @expectedException XML_XRD_LogicException
-     */
     public function testArrayAccessSet()
     {
+        $this->expectException(XML_XRD_LogicException::class);
         $this->xrd['foo'] = 'bar';
     }
 
-    /**
-     * @expectedException XML_XRD_LogicException
-     */
     public function testArrayAccessUnset()
     {
+        $this->expectException(XML_XRD_LogicException::class);
         unset($this->xrd['foo']);
     }
 

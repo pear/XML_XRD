@@ -1,15 +1,17 @@
 <?php
 require_once 'XML/XRD.php';
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @covers XML_XRD_Element_Link
  */
-class XML_XRD_Element_LinkTest extends PHPUnit_Framework_TestCase
+class XML_XRD_Element_LinkTest extends TestCase
 {
     public $xrd;
     public $link;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->xrd = new XML_XRD();
         $this->xrd->loadFile(__DIR__ . '/../../../xrd/xrd-1.0-b1.xrd');

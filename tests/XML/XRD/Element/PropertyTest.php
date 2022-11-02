@@ -1,7 +1,9 @@
 <?php
 require_once 'XML/XRD/Element/Property.php';
 
-class XML_XRD_Element_PropertyTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class XML_XRD_Element_PropertyTest extends TestCase
 {
     public function test__constructParams()
     {
